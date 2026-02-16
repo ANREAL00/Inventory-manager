@@ -7,6 +7,7 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 require('./config/passport');
 
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
@@ -15,7 +16,9 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());
+
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.get('/', (req, res) => {
     res.send('Inventory Manager API is running');
 });
