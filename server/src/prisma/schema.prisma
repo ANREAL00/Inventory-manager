@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -21,6 +22,7 @@ model User {
   
   inventories        Inventory[] @relation("Owner")
   sharedInventories  Inventory[] @relation("SharedAccess")
+  createdItems       Item[]      @relation("ItemCreator")
   comments           Comment[]
   likes              Like[]
   
@@ -49,6 +51,8 @@ model Inventory {
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@fulltext([title, description])
 }
 
 model InventoryField {
@@ -91,12 +95,21 @@ model Item {
   date2       DateTime?
   date3       DateTime?
 
+  image1      String?
+  image2      String?
+  image3      String?
+
   likes       Like[]
-  
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
+  createdByUserId String?
+  createdByUser   User?  @relation("ItemCreator", fields: [createdByUserId], references: [id])
+  
   @@unique([inventoryId, customId])
+  @@fulltext([customId])
+  @@fulltext([string1, string2, string3, text1, text2, text3])
 }
 
 model Tag {
