@@ -30,6 +30,7 @@ CREATE TABLE `Inventory` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    FULLTEXT INDEX `Inventory_title_description_idx`(`title`, `description`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -65,10 +66,16 @@ CREATE TABLE `Item` (
     `date1` DATETIME(3) NULL,
     `date2` DATETIME(3) NULL,
     `date3` DATETIME(3) NULL,
+    `image1` VARCHAR(191) NULL,
+    `image2` VARCHAR(191) NULL,
+    `image3` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `createdByUserId` VARCHAR(191) NULL,
 
     UNIQUE INDEX `Item_inventoryId_customId_key`(`inventoryId`, `customId`),
+    FULLTEXT INDEX `Item_customId_idx`(`customId`),
+    FULLTEXT INDEX `Item_string1_string2_string3_text1_text2_text3_idx`(`string1`, `string2`, `string3`, `text1`, `text2`, `text3`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -120,6 +127,8 @@ ALTER TABLE `Inventory` ADD CONSTRAINT `Inventory_ownerId_fkey` FOREIGN KEY (`ow
 ALTER TABLE `InventoryField` ADD CONSTRAINT `InventoryField_inventoryId_fkey` FOREIGN KEY (`inventoryId`) REFERENCES `Inventory`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE `Item` ADD CONSTRAINT `Item_inventoryId_fkey` FOREIGN KEY (`inventoryId`) REFERENCES `Inventory`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE `Item` ADD CONSTRAINT `Item_createdByUserId_fkey` FOREIGN KEY (`createdByUserId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE `Comment` ADD CONSTRAINT `Comment_inventoryId_fkey` FOREIGN KEY (`inventoryId`) REFERENCES `Inventory`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
