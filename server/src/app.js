@@ -9,6 +9,7 @@ require('./config/passport');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const inventoryRoutes = require('./routes/inventoryRoutes');
+const itemRoutes = require('./routes/itemRoutes');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(passport.initialize());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/inventories', inventoryRoutes);
+app.use('/api/items', itemRoutes);
 
 app.get('/', (req, res) => {
     res.send('Inventory Manager API is running');
