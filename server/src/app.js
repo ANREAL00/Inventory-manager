@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require('http');
+const { initSocket } = require('./socket');
 const cors = require('cors');
 const passport = require('passport');
 const path = require('path');
@@ -32,7 +34,12 @@ app.get('/', (req, res) => {
     res.send('Inventory Manager API is running');
 });
 
-app.listen(PORT, () => {
+const server = http.createServer(app);
+const io = initSocket(server);
+
+app.set('io', io);
+
+server.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);
 });
 
