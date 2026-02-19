@@ -11,6 +11,7 @@ const searchInventories = async (term) => {
             OR: [
                 { title: { contains: term } },
                 { description: { contains: term } },
+                { tags: { some: { name: { contains: term } } } },
             ],
         },
         take: 10,
@@ -21,7 +22,11 @@ const buildItemSearchQuery = (term) => ({
     OR: [
         { customId: { contains: term } },
         { string1: { contains: term } },
+        { string2: { contains: term } },
+        { string3: { contains: term } },
         { text1: { contains: term } },
+        { text2: { contains: term } },
+        { text3: { contains: term } },
     ],
 });
 
