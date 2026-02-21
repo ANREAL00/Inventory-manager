@@ -27,7 +27,7 @@ export function useAdminUsers() {
 
     const handleAction = async (action, method = 'patch') => {
         try {
-            await Promise.all(selectedIds.map(id => api[method](`/ users / ${id}/${action}`)));
+            await Promise.all(selectedIds.map(id => api[method](`/users/${id}/${action}`)));
             await fetchUsers();
             setSelectedIds([]);
         } catch (err) {
