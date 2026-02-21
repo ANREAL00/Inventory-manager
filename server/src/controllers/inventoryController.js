@@ -102,3 +102,27 @@ exports.updateInventory = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 }
+
+exports.getMyInventories = async (req, res) => {
+    try {
+        const inventories = await prisma.inventory.findMany({
+            where: { ownerId: req.user.id },
+            include: { tags: true },
+        });
+        sendResponse(res, { inventories });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to fetch your inventories' });
+    }
+};
+
+exports.getSharedInventories = async (req, res) => {
+    try {
+        const inventories = await prisma.inventory.findMany({
+            where: { authorizedUsers: { some: { id: req.user.id } } },
+            include: { tags: true, owner: { select: { name: true } } },
+        });
+        sendResponse(res, { inventories });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to fetch shared inventories' });
+    }
+};
