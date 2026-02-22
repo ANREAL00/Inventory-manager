@@ -36,8 +36,9 @@ exports.createInventory = async (req, res) => {
                 category,
                 ownerId: req.user.id,
                 tags: { connectOrCreate: tagConnect },
+                fields: { create: req.body.fields || [] },
             },
-            include: { tags: true },
+            include: { tags: true, fields: true },
         });
 
         sendResponse(res, { inventory }, 'Inventory created');
@@ -89,13 +90,15 @@ exports.updateInventory = async (req, res) => {
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        const { tags, ...data } = req.body;
-        // Note: Tag update logic would go here, simplified for now
+        const { tags, fields, ...data } = req.body;
 
         const updated = await prisma.inventory.update({
             where: { id: req.params.id },
-            data,
-            include: { tags: true },
+            data: {
+                ...data,
+                fields: fields ? { deleteMany: {}, create: fields } : undefined
+            },
+            include: { tags: true, fields: true },
         });
         sendResponse(res, { inventory: updated }, 'Inventory updated');
     } catch (err) {
