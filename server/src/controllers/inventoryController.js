@@ -126,3 +126,25 @@ exports.getSharedInventories = async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch shared inventories' });
     }
 };
+
+exports.getPopularInventories = async (req, res) => {
+    try {
+        const inventories = await prisma.inventory.findMany({
+            include: { tags: true, owner: { select: { name: true } }, _count: { select: { items: true } } },
+            orderBy: { items: { _count: 'desc' } },
+            take: 5,
+        });
+        sendResponse(res, { inventories });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to fetch popular inventories' });
+    }
+};
+
+exports.getAllTags = async (req, res) => {
+    try {
+        const tags = await prisma.tag.findMany();
+        sendResponse(res, { tags });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to fetch tags' });
+    }
+};

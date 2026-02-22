@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { ThemeSwitcher } from '../ui/ThemeSwitcher';
 import { LanguageSwitcher } from '../ui/LanguageSwitcher';
+import { SearchHeader } from './SearchHeader';
 import { LogOut, User } from 'lucide-react';
 
 const Logo = () => (
@@ -38,6 +39,9 @@ export function Navbar() {
         <nav className="sticky top-0 z-50 w-full border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-gray-200 dark:border-gray-800">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 <Logo />
+                <div className="flex-1 max-w-sm mx-4 hidden md:block">
+                    <SearchHeader />
+                </div>
                 <div className="flex items-center gap-6">
                     <LanguageSwitcher />
                     <ThemeSwitcher />

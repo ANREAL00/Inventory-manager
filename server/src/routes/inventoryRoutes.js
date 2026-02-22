@@ -8,6 +8,8 @@ router.get('/', inventoryController.getAllInventories);
 
 router.get('/me', passport.authenticate('jwt', { session: false }), inventoryController.getMyInventories);
 router.get('/shared', passport.authenticate('jwt', { session: false }), inventoryController.getSharedInventories);
+router.get('/popular', inventoryController.getPopularInventories);
+router.get('/tags', inventoryController.getAllTags);
 
 router.get('/:id', inventoryController.getInventory);
 
