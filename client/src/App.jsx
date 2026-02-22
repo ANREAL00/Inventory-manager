@@ -5,6 +5,7 @@ import { RegisterPage } from './pages/auth/RegisterPage';
 import { ProfilePage } from './pages/user/ProfilePage';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { CreateInventoryPage } from './pages/inventory/CreateInventoryPage';
+import { InventoryDetailsPage } from './pages/inventory/InventoryDetailsPage';
 import { SearchPage } from './pages/SearchPage';
 import { HomePage } from './pages/HomePage';
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="admin" element={<AdminDashboard />} />
           <Route path="inventories/new" element={<CreateInventoryPage />} />
+          <Route path="inventories/:id" element={<InventoryDetailsPage />} />
           <Route path="search" element={<SearchPage />} />
         </Route>
       </Routes>

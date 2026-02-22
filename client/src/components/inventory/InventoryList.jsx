@@ -13,11 +13,12 @@ const TableHeader = () => (
 const InventoryRow = ({ item }) => (
     <tr className="border-b hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
         <td className="p-2">
-            <Link to={`/inventory/${item.id}`} className="text-blue-500 hover:underline">
+            <Link to={`/inventories/${item.id}`} className="text-blue-500 hover:underline">
                 {item.title}
             </Link>
         </td>
         <td className="p-2">{item.category}</td>
+        <td className="p-2 text-gray-500">{item.owner?.name || '-'}</td>
         <td className="p-2">{new Date(item.createdAt).toLocaleDateString()}</td>
     </tr>
 );

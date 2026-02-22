@@ -2,7 +2,7 @@ import { Trash2, Eye, EyeOff } from 'lucide-react';
 import { FieldTypeIcon } from './FieldTypeIcon';
 
 const VisibilityBtn = ({ isVisible, onToggle }) => (
-    <button onClick={onToggle} title="Toggle Visibility in Table" className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-800 rounded">
+    <button type="button" onClick={onToggle} title="Toggle Visibility in Table" className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-800 rounded">
         {isVisible ? <Eye size={16} /> : <EyeOff size={16} className="text-gray-400" />}
     </button>
 );
@@ -17,7 +17,7 @@ export function FieldInput({ field, onUpdate, onRemove }) {
             </div>
             <div className="flex flex-col gap-1">
                 <VisibilityBtn isVisible={field.isVisible} onToggle={() => onUpdate({ isVisible: !field.isVisible })} />
-                <button onClick={onRemove} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"><Trash2 size={16} /></button>
+                <button type="button" onClick={onRemove} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"><Trash2 size={16} /></button>
             </div>
         </div>
     );

@@ -2,7 +2,7 @@ import { FieldInput } from './FieldInput';
 import { Type, AlignLeft, Hash, ImageIcon, CheckSquare, Calendar, Plus } from 'lucide-react';
 
 const AddBtn = ({ type, label, onClick, icon: Icon }) => (
-    <button onClick={() => onClick(type)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border rounded-full hover:bg-gray-100 transition-colors">
+    <button type="button" onClick={() => onClick(type)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border rounded-full hover:bg-gray-100 transition-colors">
         <Icon size={14} /> {label}
     </button>
 );
