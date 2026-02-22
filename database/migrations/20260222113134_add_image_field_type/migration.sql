@@ -1,3 +1,4 @@
+-- CreateTable
 CREATE TABLE `User` (
     `id` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
@@ -18,6 +19,7 @@ CREATE TABLE `User` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
 CREATE TABLE `Inventory` (
     `id` VARCHAR(191) NOT NULL,
     `title` VARCHAR(191) NOT NULL,
@@ -34,10 +36,11 @@ CREATE TABLE `Inventory` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
 CREATE TABLE `InventoryField` (
     `id` VARCHAR(191) NOT NULL,
     `inventoryId` VARCHAR(191) NOT NULL,
-    `type` ENUM('STRING', 'TEXT', 'NUMBER', 'BOOLEAN', 'DATE') NOT NULL,
+    `type` ENUM('STRING', 'TEXT', 'NUMBER', 'BOOLEAN', 'DATE', 'IMAGE') NOT NULL,
     `index` INTEGER NOT NULL,
     `title` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
@@ -47,6 +50,7 @@ CREATE TABLE `InventoryField` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
 CREATE TABLE `Item` (
     `id` VARCHAR(191) NOT NULL,
     `inventoryId` VARCHAR(191) NOT NULL,
@@ -79,6 +83,7 @@ CREATE TABLE `Item` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
 CREATE TABLE `Tag` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
@@ -87,6 +92,7 @@ CREATE TABLE `Tag` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
 CREATE TABLE `Comment` (
     `id` VARCHAR(191) NOT NULL,
     `content` TEXT NOT NULL,
@@ -97,6 +103,7 @@ CREATE TABLE `Comment` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
 CREATE TABLE `Like` (
     `id` VARCHAR(191) NOT NULL,
     `itemId` VARCHAR(191) NOT NULL,
@@ -106,6 +113,7 @@ CREATE TABLE `Like` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
 CREATE TABLE `_SharedAccess` (
     `A` VARCHAR(191) NOT NULL,
     `B` VARCHAR(191) NOT NULL,
@@ -114,6 +122,7 @@ CREATE TABLE `_SharedAccess` (
     INDEX `_SharedAccess_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
 CREATE TABLE `_InventoryToTag` (
     `A` VARCHAR(191) NOT NULL,
     `B` VARCHAR(191) NOT NULL,
@@ -122,26 +131,38 @@ CREATE TABLE `_InventoryToTag` (
     INDEX `_InventoryToTag_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- AddForeignKey
 ALTER TABLE `Inventory` ADD CONSTRAINT `Inventory_ownerId_fkey` FOREIGN KEY (`ownerId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
+-- AddForeignKey
 ALTER TABLE `InventoryField` ADD CONSTRAINT `InventoryField_inventoryId_fkey` FOREIGN KEY (`inventoryId`) REFERENCES `Inventory`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
+-- AddForeignKey
 ALTER TABLE `Item` ADD CONSTRAINT `Item_inventoryId_fkey` FOREIGN KEY (`inventoryId`) REFERENCES `Inventory`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
+-- AddForeignKey
 ALTER TABLE `Item` ADD CONSTRAINT `Item_createdByUserId_fkey` FOREIGN KEY (`createdByUserId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
+-- AddForeignKey
 ALTER TABLE `Comment` ADD CONSTRAINT `Comment_inventoryId_fkey` FOREIGN KEY (`inventoryId`) REFERENCES `Inventory`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
+-- AddForeignKey
 ALTER TABLE `Comment` ADD CONSTRAINT `Comment_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
+-- AddForeignKey
 ALTER TABLE `Like` ADD CONSTRAINT `Like_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `Item`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
+-- AddForeignKey
 ALTER TABLE `Like` ADD CONSTRAINT `Like_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
+-- AddForeignKey
 ALTER TABLE `_SharedAccess` ADD CONSTRAINT `_SharedAccess_A_fkey` FOREIGN KEY (`A`) REFERENCES `Inventory`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
+-- AddForeignKey
 ALTER TABLE `_SharedAccess` ADD CONSTRAINT `_SharedAccess_B_fkey` FOREIGN KEY (`B`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
+-- AddForeignKey
 ALTER TABLE `_InventoryToTag` ADD CONSTRAINT `_InventoryToTag_A_fkey` FOREIGN KEY (`A`) REFERENCES `Inventory`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
+-- AddForeignKey
 ALTER TABLE `_InventoryToTag` ADD CONSTRAINT `_InventoryToTag_B_fkey` FOREIGN KEY (`B`) REFERENCES `Tag`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

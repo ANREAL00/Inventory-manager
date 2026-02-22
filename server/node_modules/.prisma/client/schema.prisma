@@ -154,4 +154,5 @@ enum FieldType {
   NUMBER
   BOOLEAN
   DATE
+  IMAGE
 }
