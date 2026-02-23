@@ -9,6 +9,7 @@ import { CustomIdConfig } from '../../components/inventory/CustomIdConfig';
 import { FieldConfigurator } from '../../components/inventory/fields/FieldConfigurator';
 import { BasicInfoStep } from '../../components/inventory/wizard/BasicInfoStep';
 import { CategoryImageStep } from '../../components/inventory/wizard/CategoryImageStep';
+import { DiscussionView } from '../../components/inventory/DiscussionView';
 import { Plus, Save } from 'lucide-react';
 import api from '../../api';
 
@@ -65,7 +66,7 @@ export function InventoryDetailsPage() {
     if (loading || !localData) return <div className="p-8 text-center text-gray-500">Loading details...</div>;
 
     const canEdit = user?.role === 'ADMIN' || user?.id === inventory.ownerId;
-    const tabs = [{ id: 'items', label: 'Items' }, { id: 'settings', label: 'Settings' }, { id: 'fields', label: 'Fields' }, { id: 'custom-id', label: 'Custom ID' }].filter(t => t.id === 'items' || canEdit);
+    const tabs = [{ id: 'items', label: 'Items' }, { id: 'discussion', label: 'Discussion' }, { id: 'settings', label: 'Settings' }, { id: 'fields', label: 'Fields' }, { id: 'custom-id', label: 'Custom ID' }].filter(t => ['items', 'discussion'].includes(t.id) || canEdit);
     const update = (f) => { setLocalData(p => ({ ...p, ...f })); setIsDirty(true); };
 
     return (
@@ -81,6 +82,7 @@ export function InventoryDetailsPage() {
             </div>
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
             {activeTab === 'items' && <ItemsView inventory={inventory} canEdit={canEdit} onAdd={() => setIsModalOpen(true)} />}
+            {activeTab === 'discussion' && <DiscussionView inventoryId={id} />}
             {activeTab === 'settings' && (
                 <div className="space-y-8 bg-white dark:bg-gray-950 p-6 border rounded-xl max-w-2xl"><BasicInfoStep data={localData} update={update} /><CategoryImageStep data={localData} update={update} /></div>
             )}
