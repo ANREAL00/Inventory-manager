@@ -108,3 +108,17 @@ exports.deleteItem = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+exports.getLikes = async (req, res) => {
+    const likes = await prisma.like.findMany({ where: { itemId: req.params.id } });
+    res.json({ likes });
+};
+
+exports.toggleLike = async (req, res) => {
+    const { id: itemId } = req.params;
+    const userId = req.user.id;
+    const existing = await prisma.like.findUnique({ where: { itemId_userId: { itemId, userId } } });
+    if (existing) { await prisma.like.delete({ where: { id: existing.id } }); }
+    else { await prisma.like.create({ data: { itemId, userId } }); }
+    res.status(200).json({ status: 'success' });
+};

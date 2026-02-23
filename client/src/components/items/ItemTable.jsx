@@ -1,3 +1,5 @@
+import { LikeButton } from './LikeButton';
+
 const getCellValue = (item, field) => {
     const typeMap = { STRING: 'string', TEXT: 'text', NUMBER: 'number', BOOLEAN: 'bool', DATE: 'date', IMAGE: 'image' };
     const key = `${typeMap[field.type]}${field.index}`;
@@ -12,6 +14,7 @@ const Header = ({ fields }) => (
         <tr className="border-b">
             <th className="p-3">ID</th>
             {fields.filter(f => f.isVisible).map(f => <th key={f.id} className="p-3">{f.title}</th>)}
+            <th className="p-3 text-right">Likes</th>
         </tr>
     </thead>
 );
@@ -22,6 +25,7 @@ const Row = ({ item, fields }) => (
         {fields.filter(f => f.isVisible).map(f => (
             <td key={f.id} className="p-3">{getCellValue(item, f)}</td>
         ))}
+        <td className="p-3 text-right"><div className="flex justify-end"><LikeButton itemId={item.id} /></div></td>
     </tr>
 );
 
