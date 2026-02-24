@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { SocialLogin } from './SocialLogin';
 
 const FormInput = ({ label, type, value, onChange }) => (
     <div className="space-y-1">
@@ -51,6 +52,7 @@ export function LoginForm() {
             <FormInput label="Email" type="email" value={email} onChange={setEmail} />
             <FormInput label="Password" type="password" value={password} onChange={setPassword} />
             <SubmitButton loading={loading} />
+            <SocialLogin />
         </form>
     );
 }

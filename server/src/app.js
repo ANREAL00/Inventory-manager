@@ -30,9 +30,19 @@ app.use('/api/items', itemRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/search', searchRoutes);
 
-app.get('/', (req, res) => {
-    res.send('Inventory Manager API is running');
-});
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../../client/dist')));
+
+    app.get('*', (req, res) => {
+        if (!req.path.startsWith('/api')) {
+            res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
+        }
+    });
+} else {
+    app.get('/', (req, res) => {
+        res.send('Inventory Manager API is running');
+    });
+}
 
 const server = http.createServer(app);
 const io = initSocket(server);
