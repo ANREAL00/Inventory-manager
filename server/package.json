@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "postinstall": "prisma generate",
-    "build": "prisma generate"
+    "postinstall": "prisma generate --schema=src/prisma/schema.prisma",
+    "build": "prisma generate --schema=src/prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",

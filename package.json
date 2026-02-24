@@ -1,13 +1,13 @@
 {
-  "name": "inventory-manager-monorepo",
-  "version": "1.0.0",
-  "scripts": {
-    "install:client": "cd client && npm install",
-    "install:server": "cd server && npm install",
-    "build:client": "cd client && npm run build",
-    "build:server": "cd server && npx prisma generate",
-    "install-all": "npm run install:client && npm run install:server",
-    "build": "npm run build:client && npm run build:server",
-    "start": "cd server && npm start"
-  }
+    "name": "inventory-manager-monorepo",
+    "version": "1.0.0",
+    "scripts": {
+        "install:client": "cd client && npm install",
+        "install:server": "cd server && npm install",
+        "build:client": "cd client && npm run build",
+        "build:server": "cd server && npx prisma generate --schema=src/prisma/schema.prisma",
+        "install-all": "npm run install:client && npm run install:server",
+        "build": "npm run build:client && npm run build:server",
+        "start": "cd server && npm start"
+    }
 }
