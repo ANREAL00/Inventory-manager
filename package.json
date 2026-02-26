@@ -10,5 +10,8 @@
         "postinstall": "npm run install-all",
         "build": "npm run build:client && npm run build:server",
         "start": "cd server && npm start"
+    },
+    "engines": {
+        "node": ">=20.0.0"
     }
 }
