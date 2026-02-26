@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
+import i18n from '../utils/i18n';
 import api from '../api';
 
 export const AuthContext = createContext();
@@ -17,6 +18,11 @@ export const AuthProvider = ({ children }) => {
             try {
                 const { data } = await api.get('/auth/me');
                 setUser(data.data.user);
+                i18n.changeLanguage(data.data.user.language || 'en');
+                if (data.data.user.theme) {
+                    window.document.documentElement.classList.remove('light', 'dark');
+                    window.document.documentElement.classList.add(data.data.user.theme);
+                }
             } catch (err) {
                 localStorage.removeItem('token');
             } finally {
@@ -30,12 +36,18 @@ export const AuthProvider = ({ children }) => {
         const { data } = await api.post('/auth/login', { email, password });
         localStorage.setItem('token', data.token);
         setUser(data.data.user);
+        i18n.changeLanguage(data.data.user.language || 'en');
+        if (data.data.user.theme) {
+            window.document.documentElement.classList.remove('light', 'dark');
+            window.document.documentElement.classList.add(data.data.user.theme);
+        }
     };
 
     const register = async (name, email, password) => {
         const { data } = await api.post('/auth/register', { name, email, password });
         localStorage.setItem('token', data.token);
         setUser(data.data.user);
+        i18n.changeLanguage(data.data.user.language || 'en');
     };
 
     const logout = () => {

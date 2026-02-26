@@ -13,6 +13,9 @@ const restrictToAdmin = (req, res, next) => {
     next();
 };
 
+router.patch('/me/language', userController.updateLanguage);
+router.patch('/me/theme', userController.updateTheme);
+
 router.use(restrictToAdmin);
 
 router.get('/', userController.getAllUsers);

@@ -8,7 +8,7 @@ const getInitialData = (fields) => {
     return initial;
 };
 
-export function ItemForm({ fields, onSubmit, initialData = {} }) {
+export function ItemForm({ fields, onSubmit, initialData = {}, readOnly = false }) {
     const [data, setData] = useState({ ...getInitialData(fields), ...initialData });
 
     const handleChange = (key, val) => setData(prev => ({ ...prev, [key]: val }));
@@ -26,12 +26,14 @@ export function ItemForm({ fields, onSubmit, initialData = {} }) {
                 {fields.map(f => {
                     const typeMap = { STRING: 'string', TEXT: 'text', NUMBER: 'number', BOOLEAN: 'bool', DATE: 'date', IMAGE: 'image' };
                     const key = `${typeMap[f.type]}${f.index}`;
-                    return <FieldInputRender key={f.id} field={f} value={data[key]} onChange={(val) => handleChange(key, val)} />;
+                    return <FieldInputRender key={f.id} field={f} value={data[key]} onChange={(val) => !readOnly && handleChange(key, val)} />;
                 })}
             </div>
-            <button className="w-full py-2 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 transition-colors">
-                Save Item
-            </button>
+            {!readOnly && (
+                <button className="w-full py-2 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 transition-colors">
+                    Save Item
+                </button>
+            )}
         </form>
     );
 }

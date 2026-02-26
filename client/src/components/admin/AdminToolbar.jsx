@@ -18,7 +18,8 @@ export function AdminToolbar({ onAction, selectedCount }) {
             <ToolBtn onClick={() => onAction('block')} color="text-orange-500" icon={UserMinus} label="Block" />
             <ToolBtn onClick={() => onAction('unblock')} color="text-green-500" icon={UserCheck} label="Unblock" />
             <ToolBtn onClick={() => onAction('delete', 'delete')} color="text-red-500" icon={Trash2} label="Delete" />
-            <ToolBtn onClick={() => onAction('role')} color="text-blue-500" icon={Shield} label="Toggle Admin" />
+            <ToolBtn onClick={() => onAction('role', 'patch', { role: 'ADMIN' })} color="text-blue-500" icon={Shield} label="Make Admin" />
+            <ToolBtn onClick={() => onAction('role', 'patch', { role: 'USER' })} color="text-gray-500" icon={ShieldAlert} label="Remove Admin" />
             <div className="ml-auto flex items-center text-sm font-medium">{selectedCount} selected</div>
         </div>
     );

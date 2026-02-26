@@ -19,8 +19,8 @@ const Header = ({ fields }) => (
     </thead>
 );
 
-const Row = ({ item, fields }) => (
-    <tr className="border-b last:border-0 hover:bg-gray-50 dark:hover:bg-gray-900">
+const Row = ({ item, fields, onClick }) => (
+    <tr onClick={() => onClick(item)} className="border-b last:border-0 hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer transition-colors">
         <td className="p-3 font-mono text-xs">{item.customId}</td>
         {fields.filter(f => f.isVisible).map(f => (
             <td key={f.id} className="p-3">{getCellValue(item, f)}</td>
@@ -29,12 +29,12 @@ const Row = ({ item, fields }) => (
     </tr>
 );
 
-export function ItemTable({ items, fields }) {
+export function ItemTable({ items, fields, onItemClick }) {
     return (
         <div className="border rounded-lg overflow-hidden">
             <table className="w-full text-sm text-left">
                 <Header fields={fields} />
-                <tbody>{items.map(it => <Row key={it.id} item={it} fields={fields} />)}</tbody>
+                <tbody>{items.map(it => <Row key={it.id} item={it} fields={fields} onClick={onItemClick} />)}</tbody>
             </table>
         </div>
     );

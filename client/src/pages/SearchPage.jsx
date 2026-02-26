@@ -1,7 +1,14 @@
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import api from '../api';
 import { InventoryList } from '../components/inventory/InventoryList';
+
+const Section = ({ title, children }) => (
+    <div className="space-y-4">
+        <h2 className="text-xl font-bold border-b pb-2">{title}</h2>
+        {children}
+    </div>
+);
 
 export function SearchPage() {
     const [searchParams] = useSearchParams();
@@ -23,10 +30,21 @@ export function SearchPage() {
     if (loading) return <div className="p-8 text-center text-gray-500">Searching...</div>;
 
     return (
-        <div className="space-y-8">
-            <h1 className="text-2xl font-bold">Search results for "{query}"</h1>
-            {results.inventories.length > 0 && <InventoryList items={results.inventories} />}
-            {results.inventories.length === 0 && <div className="text-gray-500">No results found.</div>}
+        <div className="space-y-12 py-8">
+            <h1 className="text-3xl font-extrabold">Results for "{query}"</h1>
+            <Section title="Inventories"><InventoryList items={results.inventories} /></Section>
+            <Section title="Items">
+                {results.items.length > 0 ? (
+                    <div className="space-y-4">
+                        {results.items.map(it => (
+                            <div key={it.id} className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+                                <Link to={`/inventories/${it.inventoryId}`} className="font-bold text-blue-500 hover:underline">{it.customId}</Link>
+                                <p className="text-sm text-gray-500 line-clamp-2">{it.string1 || it.text1 || 'No preview available'}</p>
+                            </div>
+                        ))}
+                    </div>
+                ) : <p className="text-gray-500">No items found.</p>}
+            </Section>
         </div>
     );
 }

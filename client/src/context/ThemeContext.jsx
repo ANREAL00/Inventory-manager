@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
+import api from '../api';
 
 export const ThemeContext = createContext();
 
@@ -22,8 +23,10 @@ export const ThemeProvider = ({ children }) => {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  const toggleTheme = async () => {
+    const next = theme === 'light' ? 'dark' : 'light';
+    setTheme(next);
+    try { await api.patch('/users/me/theme', { theme: next }); } catch (e) { }
   };
 
   return (

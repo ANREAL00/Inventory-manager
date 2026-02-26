@@ -93,18 +93,15 @@ exports.updateInventory = async (req, res) => {
         const { tags, fields, ...data } = req.body;
 
         const updated = await prisma.inventory.update({
-            where: { id: req.params.id },
-            data: {
-                ...data,
-                fields: fields ? { deleteMany: {}, create: fields } : undefined
-            },
+            where: { id: req.params.id, version: data.version },
+            data: { ...data, version: { increment: 1 }, fields: fields ? { deleteMany: {}, create: fields } : undefined },
             include: { tags: true, fields: true },
         });
         sendResponse(res, { inventory: updated }, 'Inventory updated');
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(err.code === 'P2025' ? 409 : 500).json({ message: 'Conflict or update failed' });
     }
-}
+};
 
 exports.getMyInventories = async (req, res) => {
     try {
@@ -150,4 +147,22 @@ exports.getAllTags = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: 'Failed to fetch tags' });
     }
+};
+exports.getInventoryStats = async (req, res) => {
+    const inv = await prisma.inventory.findUnique({ where: { id: req.params.id }, include: { items: true, fields: true } });
+    const stats = { itemCount: inv.items.length, fields: [] };
+
+    inv.fields.forEach(f => {
+        const typeMap = { NUMBER: 'number', STRING: 'string' };
+        if (!typeMap[f.type]) return;
+        const values = inv.items.map(it => it[`${typeMap[f.type]}${f.index}`]).filter(v => v !== null && v !== undefined);
+        if (f.type === 'NUMBER' && values.length) {
+            stats.fields.push({ title: f.title, type: 'NUMBER', avg: values.reduce((a, b) => a + b, 0) / values.length, min: Math.min(...values), max: Math.max(...values) });
+        } else if (f.type === 'STRING' && values.length) {
+            const counts = values.reduce((acc, v) => ({ ...acc, [v]: (acc[v] || 0) + 1 }), {});
+            const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+            stats.fields.push({ title: f.title, type: 'STRING', topValue: top[0], frequency: top[1] });
+        }
+    });
+    res.json({ stats });
 };

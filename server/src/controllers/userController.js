@@ -60,3 +60,19 @@ exports.changeRole = async (req, res) => {
     }
     await updateUserData(res, req.params.id, { role }, 'Role updated');
 };
+
+exports.searchUsers = async (req, res) => {
+    const { q } = req.query;
+    const users = await prisma.user.findMany({
+        where: { OR: [{ name: { contains: q } }, { email: { contains: q } }] },
+        select: { id: true, name: true, email: true },
+        take: 10
+    });
+    res.json({ users });
+};
+exports.updateLanguage = async (req, res) => {
+    await updateUserData(res, req.user.id, { language: req.body.language }, 'Language updated');
+};
+exports.updateTheme = async (req, res) => {
+    await updateUserData(res, req.user.id, { theme: req.body.theme }, 'Theme updated');
+};

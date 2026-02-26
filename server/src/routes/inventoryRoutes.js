@@ -13,6 +13,7 @@ router.get('/popular', inventoryController.getPopularInventories);
 router.get('/tags', inventoryController.getAllTags);
 
 router.get('/:id', inventoryController.getInventory);
+router.get('/:id/stats', inventoryController.getInventoryStats);
 router.get('/:id/comments', commentController.getComments);
 
 router.use(passport.authenticate('jwt', { session: false }));

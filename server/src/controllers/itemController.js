@@ -38,7 +38,11 @@ const prepareItemData = (body, inventoryId, customId, userId) => ({
 });
 
 const performUpdate = async (id, data) => {
-    return await prisma.item.update({ where: { id }, data });
+    const { version, ...updateData } = data;
+    return await prisma.item.update({
+        where: { id, version: version },
+        data: { ...updateData, version: { increment: 1 } }
+    });
 };
 
 exports.getItem = async (req, res) => {
@@ -91,7 +95,7 @@ exports.updateItem = async (req, res) => {
         const updated = await performUpdate(req.params.id, req.body);
         sendResponse(res, { item: updated }, 'Item updated');
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(err.code === 'P2025' ? 409 : 500).json({ message: 'Conflict or update failed' });
     }
 };
 
