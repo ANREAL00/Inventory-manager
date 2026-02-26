@@ -43,7 +43,8 @@ exports.createInventory = async (req, res) => {
 
         sendResponse(res, { inventory }, 'Inventory created');
     } catch (err) {
-        res.status(500).json({ message: 'Failed to create inventory' });
+        console.error('Create inventory error:', err);
+        res.status(500).json({ message: 'Failed to create inventory', error: err.message });
     }
 };
 
@@ -55,7 +56,8 @@ exports.getAllInventories = async (req, res) => {
         });
         sendResponse(res, { inventories });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to fetch inventories' });
+        console.error('Fetch inventories error:', err);
+        res.status(500).json({ message: 'Failed to fetch inventories', error: err.message });
     }
 };
 
@@ -111,7 +113,8 @@ exports.getMyInventories = async (req, res) => {
         });
         sendResponse(res, { inventories });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to fetch your inventories' });
+        console.error('Fetch my inventories error:', err);
+        res.status(500).json({ message: 'Failed to fetch your inventories', error: err.message });
     }
 };
 
@@ -136,7 +139,8 @@ exports.getPopularInventories = async (req, res) => {
         });
         sendResponse(res, { inventories });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to fetch popular inventories' });
+        console.error('Fetch popular inventories error:', err);
+        res.status(500).json({ message: 'Failed to fetch popular inventories', error: err.message });
     }
 };
 
@@ -145,7 +149,8 @@ exports.getAllTags = async (req, res) => {
         const tags = await prisma.tag.findMany();
         sendResponse(res, { tags });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to fetch tags' });
+        console.error('Fetch tags error:', err);
+        res.status(500).json({ message: 'Failed to fetch tags', error: err.message });
     }
 };
 exports.getInventoryStats = async (req, res) => {
