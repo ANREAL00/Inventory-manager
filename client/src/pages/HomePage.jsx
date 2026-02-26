@@ -17,17 +17,22 @@ export function HomePage() {
     const [tags, setTags] = useState([]);
 
     useEffect(() => {
-        api.get('/inventories/popular').then(res => setPopular(res.data.data.inventories));
-        api.get('/inventories/tags').then(res => setTags(res.data.data.tags));
+        api.get('/inventories/popular')
+            .then(res => setPopular(res.data?.data?.inventories || []))
+            .catch(err => console.error('Failed to fetch popular inventories:', err));
+
+        api.get('/inventories/tags')
+            .then(res => setTags(res.data?.data?.tags || []))
+            .catch(err => console.error('Failed to fetch tags:', err));
     }, []);
 
     if (l1) return <div className="p-8 text-center text-gray-500">Loading home page...</div>;
 
     return (
         <div className="space-y-12 py-6">
-            <Section title="Latest Inventories"><InventoryList items={latest} /></Section>
-            <Section title="Most Popular"><InventoryList items={popular} /></Section>
-            <Section title="Tag Cloud"><TagCloud tags={tags} /></Section>
+            <Section title="Latest Inventories"><InventoryList items={latest || []} /></Section>
+            <Section title="Most Popular"><InventoryList items={popular || []} /></Section>
+            <Section title="Tag Cloud"><TagCloud tags={tags || []} /></Section>
         </div>
     );
 }

@@ -9,7 +9,10 @@ export function useInventories(params = {}) {
         setLoading(true);
         try {
             const { data } = await api.get('/inventories', { params });
-            setInventories(data.data.inventories);
+            setInventories(data?.data?.inventories || []);
+        } catch (err) {
+            console.error('Failed to fetch inventories:', err);
+            setInventories([]);
         } finally {
             setLoading(false);
         }
