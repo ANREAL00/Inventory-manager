@@ -43,7 +43,7 @@ exports.register = async (req, res) => {
     });
   } catch (err) {
     console.error('Register error:', err);
-    res.status(500).json({ message: 'Server error during registration' });
+    res.status(500).json({ message: 'Server error during registration', error: err.message });
   }
 };
 
@@ -76,4 +76,10 @@ exports.getMe = async (req, res) => {
       user: req.user,
     },
   });
+};
+
+exports.socialCallback = (req, res) => {
+  const token = signToken(req.user.id);
+  const frontendUrl = process.env.VITE_APP_URL || 'http://localhost:5173';
+  res.redirect(`${frontendUrl}/auth-callback?token=${token}`);
 };

@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const { generateCustomId } = require('../services/customIdService');
 const prisma = new PrismaClient();
 
 const sendResponse = (res, data, message = 'Success') => {
@@ -43,7 +44,8 @@ exports.createInventory = async (req, res) => {
 
         sendResponse(res, { inventory }, 'Inventory created');
     } catch (err) {
-        res.status(500).json({ message: 'Failed to create inventory' });
+        console.error('Create inventory error:', err);
+        res.status(500).json({ message: 'Failed to create inventory', error: err.message });
     }
 };
 
@@ -55,7 +57,8 @@ exports.getAllInventories = async (req, res) => {
         });
         sendResponse(res, { inventories });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to fetch inventories' });
+        console.error('Fetch inventories error:', err);
+        res.status(500).json({ message: 'Failed to fetch inventories', error: err.message });
     }
 };
 
@@ -111,7 +114,8 @@ exports.getMyInventories = async (req, res) => {
         });
         sendResponse(res, { inventories });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to fetch your inventories' });
+        console.error('Fetch my inventories error:', err);
+        res.status(500).json({ message: 'Failed to fetch your inventories', error: err.message });
     }
 };
 
@@ -136,7 +140,8 @@ exports.getPopularInventories = async (req, res) => {
         });
         sendResponse(res, { inventories });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to fetch popular inventories' });
+        console.error('Fetch popular inventories error:', err);
+        res.status(500).json({ message: 'Failed to fetch popular inventories', error: err.message });
     }
 };
 
@@ -145,9 +150,11 @@ exports.getAllTags = async (req, res) => {
         const tags = await prisma.tag.findMany();
         sendResponse(res, { tags });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to fetch tags' });
+        console.error('Fetch tags error:', err);
+        res.status(500).json({ message: 'Failed to fetch tags', error: err.message });
     }
 };
+
 exports.getInventoryStats = async (req, res) => {
     const inv = await prisma.inventory.findUnique({ where: { id: req.params.id }, include: { items: true, fields: true } });
     const stats = { itemCount: inv.items.length, fields: [] };
@@ -165,4 +172,12 @@ exports.getInventoryStats = async (req, res) => {
         }
     });
     res.json({ stats });
+};
+
+exports.generateId = async (req, res) => {
+    try {
+        const inv = await prisma.inventory.findUnique({ where: { id: req.params.id } });
+        const customId = await generateCustomId(req.params.id, inv.customIdConfig, true);
+        res.json({ status: 'success', data: { customId } });
+    } catch (err) { res.status(500).json({ message: err.message }); }
 };

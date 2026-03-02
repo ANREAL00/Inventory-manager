@@ -9,8 +9,8 @@ const searchInventories = async (term) => {
     return await prisma.inventory.findMany({
         where: {
             OR: [
-                { title: { contains: term } },
-                { description: { contains: term } },
+                { title: { search: term } },
+                { description: { search: term } },
                 { tags: { some: { name: { contains: term } } } },
             ],
         },
@@ -20,13 +20,13 @@ const searchInventories = async (term) => {
 
 const buildItemSearchQuery = (term) => ({
     OR: [
-        { customId: { contains: term } },
-        { string1: { contains: term } },
-        { string2: { contains: term } },
-        { string3: { contains: term } },
-        { text1: { contains: term } },
-        { text2: { contains: term } },
-        { text3: { contains: term } },
+        { customId: { search: term } },
+        { string1: { search: term } },
+        { string2: { search: term } },
+        { string3: { search: term } },
+        { text1: { search: term } },
+        { text2: { search: term } },
+        { text3: { search: term } },
     ],
 });
 

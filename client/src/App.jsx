@@ -9,11 +9,14 @@ import { InventoryDetailsPage } from './pages/inventory/InventoryDetailsPage';
 import { SearchPage } from './pages/SearchPage';
 import { HomePage } from './pages/HomePage';
 
+import { AuthCallback } from './pages/auth/AuthCallback';
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
+          <Route path="auth-callback" element={<AuthCallback />} />
           <Route index element={<HomePage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />

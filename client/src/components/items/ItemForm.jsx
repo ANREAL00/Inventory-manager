@@ -9,7 +9,7 @@ const getInitialData = (fields) => {
 };
 
 export function ItemForm({ fields, onSubmit, initialData = {}, readOnly = false }) {
-    const [data, setData] = useState({ ...getInitialData(fields), ...initialData });
+    const [data, setData] = useState({ customId: '', ...getInitialData(fields), ...initialData });
 
     const handleChange = (key, val) => setData(prev => ({ ...prev, [key]: val }));
 
@@ -23,6 +23,15 @@ export function ItemForm({ fields, onSubmit, initialData = {}, readOnly = false 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-1">
+                    <label className="text-sm font-medium">Custom ID</label>
+                    <input
+                        value={data.customId}
+                        onChange={(e) => !readOnly && handleChange('customId', e.target.value)}
+                        className="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 font-mono"
+                        required
+                    />
+                </div>
                 {fields.map(f => {
                     const typeMap = { STRING: 'string', TEXT: 'text', NUMBER: 'number', BOOLEAN: 'bool', DATE: 'date', IMAGE: 'image' };
                     const key = `${typeMap[f.type]}${f.index}`;

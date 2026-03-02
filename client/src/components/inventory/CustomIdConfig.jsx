@@ -29,9 +29,13 @@ export function CustomIdConfig({ config, onChange }) {
 
     return (
         <div className="space-y-6 max-w-2xl">
-            <CustomIdPreview config={config} />
+            <CustomIdPreview config={config} inventoryId={config.inventoryId} />
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {TYPES.map(t => <button key={t} onClick={() => add(t)} className="px-3 py-1.5 text-xs border rounded-full hover:bg-gray-50">{t}</button>)}
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-500 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30">
+                <Info size={16} className="text-blue-500 shrink-0" />
+                <p>Drag parts to reorder. <strong>Fixed</strong>: Custom text. <strong>Random</strong>: Unique numbers. <strong>Sequence</strong>: Auto-incrementing ID. <strong>GUID</strong>: Globally unique long ID.</p>
             </div>
             <div className="space-y-2">{config.map((p, i) => <Part key={i} part={p} index={i} onRemove={update} />)}</div>
         </div>

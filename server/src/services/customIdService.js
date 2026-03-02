@@ -12,25 +12,27 @@ const generators = {
     date: () => new Date().toISOString().split('T')[0],
 };
 
-const getNextSequence = async (inventoryId) => {
-    const count = await prisma.item.count({ where: { inventoryId } });
-    return (count + 1).toString();
+const getNextSequence = async (inventoryId, isPreview) => {
+    const inv = await prisma.inventory.findUnique({ where: { id: inventoryId }, select: { lastSequence: true } });
+    const next = (inv?.lastSequence || 0) + 1;
+    if (!isPreview) await prisma.inventory.update({ where: { id: inventoryId }, data: { lastSequence: next } });
+    return next.toString();
 };
 
-const generatePart = async (part, inventoryId) => {
+const generatePart = async (part, inventoryId, isPreview) => {
     if (part.type === 'sequence') {
-        return await getNextSequence(inventoryId);
+        return await getNextSequence(inventoryId, isPreview);
     }
     const generator = generators[part.type];
     return generator ? generator(part.value) : '';
 };
 
-exports.generateCustomId = async (inventoryId, configJson) => {
+exports.generateCustomId = async (inventoryId, configJson, isPreview = false) => {
     if (!configJson) return uuidv4();
 
     try {
         const config = JSON.parse(configJson);
-        const parts = await Promise.all(config.map(part => generatePart(part, inventoryId)));
+        const parts = await Promise.all(config.map(part => generatePart(part, inventoryId, isPreview)));
         return parts.join('');
     } catch (e) {
         return uuidv4();

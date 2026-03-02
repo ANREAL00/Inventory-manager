@@ -16,9 +16,14 @@ import { StatisticsView } from '../../components/inventory/StatisticsView';
 import { Plus, Save } from 'lucide-react';
 import api from '../../api';
 
+import ReactMarkdown from 'react-markdown';
+
 const Header = ({ inventory }) => (
     <div className="space-y-4 mb-4">
         <h1 className="text-4xl font-extrabold">{inventory.title}</h1>
+        <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+            <ReactMarkdown>{inventory.description}</ReactMarkdown>
+        </div>
         <div className="flex gap-2">
             {inventory.tags.map(t => <span key={t.id} className="text-blue-500 font-medium">#{t.name}</span>)}
         </div>

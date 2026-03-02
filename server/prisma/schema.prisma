@@ -52,6 +52,7 @@ model Inventory {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   version     Int      @default(0)
+  lastSequence Int     @default(0)
 
   @@fulltext([title, description])
 }
