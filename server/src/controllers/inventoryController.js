@@ -93,16 +93,22 @@ exports.updateInventory = async (req, res) => {
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        const { tags, fields, ...data } = req.body;
+        const { title, description, category, imageUrl, isPublic, customIdConfig, version, fields, authorizedUsers } = req.body;
+
+        const updateData = { title, description, category, imageUrl, isPublic, version: { increment: 1 } };
+        if (customIdConfig !== undefined) updateData.customIdConfig = typeof customIdConfig === 'string' ? customIdConfig : JSON.stringify(customIdConfig);
+        if (fields) updateData.fields = { deleteMany: {}, create: fields.map(({ id, inventoryId, ...f }) => f) };
+        if (authorizedUsers) updateData.authorizedUsers = { set: authorizedUsers.map(u => ({ id: u.id })) };
 
         const updated = await prisma.inventory.update({
-            where: { id: req.params.id, version: data.version },
-            data: { ...data, version: { increment: 1 }, fields: fields ? { deleteMany: {}, create: fields } : undefined },
-            include: { tags: true, fields: true },
+            where: { id: req.params.id, version },
+            data: updateData,
+            include: { tags: true, fields: true, authorizedUsers: true, owner: { select: { name: true } } },
         });
         sendResponse(res, { inventory: updated }, 'Inventory updated');
     } catch (err) {
-        res.status(err.code === 'P2025' ? 409 : 500).json({ message: 'Conflict or update failed' });
+        console.error('Update inventory error:', err);
+        res.status(err.code === 'P2025' ? 409 : 500).json({ message: 'Conflict or update failed', error: err.message });
     }
 };
 
