@@ -65,7 +65,10 @@ export function InventoryDetailsPage() {
             const res = await api.patch(`/inventories/${id}`, data);
             setLocalData(res.data.data.inventory);
             setIsDirty(false);
-        } catch (e) { alert(e.response?.status === 409 ? 'Version conflict! Please refresh.' : 'Save failed'); }
+        } catch (e) {
+            const msg = e.response?.data?.error || e.response?.data?.message || 'Save failed';
+            alert(e.response?.status === 409 ? 'Version conflict! Please refresh.' : `Save failed: ${msg}`);
+        }
         finally { setIsSaving(false); }
     };
 
