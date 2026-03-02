@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../../api';
 import { UserMinus, UserPlus, Search } from 'lucide-react';
 
-export function AccessSettingsView({ isPublic, authorizedUsers, onChange }) {
+export function AccessSettingsView({ isPublic, authorizedUsers = [], onChange }) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
 

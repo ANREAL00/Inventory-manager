@@ -19,7 +19,7 @@ const handleConnection = (io) => (socket) => {
 exports.initSocket = (server) => {
     const io = new Server(server, {
         cors: {
-            origin: process.env.CLIENT_URL || 'http://localhost:5173',
+            origin: process.env.VITE_APP_URL || '*',
             methods: ['GET', 'POST'],
         },
     });
