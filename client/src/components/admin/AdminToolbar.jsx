@@ -11,7 +11,6 @@ const ToolBtn = ({ onClick, color, icon: Icon, label }) => (
 );
 
 export function AdminToolbar({ onAction, selectedCount }) {
-    if (selectedCount === 0) return null;
 
     return (
         <div className="flex gap-4 p-4 mb-4 bg-gray-50 dark:bg-gray-900 border rounded-lg animate-in fade-in slide-in-from-top-2">

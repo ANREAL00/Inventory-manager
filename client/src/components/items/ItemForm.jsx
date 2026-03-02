@@ -26,7 +26,7 @@ export function ItemForm({ fields, onSubmit, initialData = {}, readOnly = false 
                 <div className="space-y-1">
                     <label className="text-sm font-medium">Custom ID</label>
                     <input
-                        value={data.customId}
+                        value={data.customId || ''}
                         onChange={(e) => !readOnly && handleChange('customId', e.target.value)}
                         className="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 font-mono"
                         required
