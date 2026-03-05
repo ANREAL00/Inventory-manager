@@ -128,7 +128,7 @@ export function InventoryDetailsPage() {
             )}
             {activeTab === 'custom-id' && (
                 <div className="bg-white dark:bg-gray-950 p-6 border rounded-xl max-w-2xl">
-                    <CustomIdConfig config={typeof localData.customIdConfig === 'string' ? JSON.parse(localData.customIdConfig) : (localData.customIdConfig || [])} onChange={(c) => update({ customIdConfig: c })} />
+                    <CustomIdConfig config={(typeof localData.customIdConfig === 'string' ? JSON.parse(localData.customIdConfig) : localData.customIdConfig) || []} inventoryId={id} onChange={(c) => update({ customIdConfig: c })} />
                 </div>
             )}
             <AddItemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} inventoryId={id} fields={inventory.fields} onCreated={refetch} />

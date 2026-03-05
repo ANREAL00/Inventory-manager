@@ -5,14 +5,14 @@ export function CustomIdPreview({ config = [], inventoryId }) {
     const [preview, setPreview] = useState('');
 
     useEffect(() => {
-        if (!inventoryId) return;
-        const fetch = async () => {
+        if (!inventoryId || !config.length) return setPreview('');
+        const timer = setTimeout(async () => {
             try {
-                const res = await api.get(`/inventories/${inventoryId}/generate-id`);
+                const res = await api.post(`/inventories/${inventoryId}/generate-id`, { config });
                 setPreview(res.data.data.customId);
             } catch (e) { setPreview('Error generating ID'); }
-        };
-        fetch();
+        }, 500);
+        return () => clearTimeout(timer);
     }, [config, inventoryId]);
 
     return (

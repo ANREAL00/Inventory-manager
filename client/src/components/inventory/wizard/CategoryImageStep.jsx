@@ -6,7 +6,7 @@ export function CategoryImageStep({ data, update }) {
             <div className="space-y-1">
                 <label className="text-sm font-semibold">Category</label>
                 <select
-                    value={data.category}
+                    value={data.category || ''}
                     onChange={(e) => update({ category: e.target.value })}
                     className="w-full px-3 py-2 border rounded-md dark:bg-gray-800"
                 >
@@ -16,7 +16,7 @@ export function CategoryImageStep({ data, update }) {
             <div className="space-y-1">
                 <label className="text-sm font-semibold">Illustration URL</label>
                 <input
-                    value={data.imageUrl}
+                    value={data.imageUrl || ''}
                     onChange={(e) => update({ imageUrl: e.target.value })}
                     className="w-full px-3 py-2 border rounded-md dark:bg-gray-800"
                     placeholder="Cloudinary link or direct URL"

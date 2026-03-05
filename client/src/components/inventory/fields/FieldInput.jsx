@@ -12,8 +12,8 @@ export function FieldInput({ field, onUpdate, onRemove }) {
         <div className="flex gap-3 items-start p-3 border rounded-lg bg-gray-50 dark:bg-gray-900 shadow-sm animate-in slide-in-from-left-2">
             <div className="p-2 bg-white dark:bg-gray-800 rounded border mt-1"><FieldTypeIcon type={field.type} /></div>
             <div className="flex-1 space-y-2">
-                <input value={field.title} placeholder="Field Title" onChange={(e) => onUpdate({ title: e.target.value })} className="w-full bg-transparent font-semibold focus:outline-none" />
-                <input value={field.description} placeholder="Tooltip Description" onChange={(e) => onUpdate({ description: e.target.value })} className="w-full bg-transparent text-sm text-gray-500 focus:outline-none" />
+                <input value={field.title || ''} placeholder="Field Title" onChange={(e) => onUpdate({ title: e.target.value })} className="w-full bg-transparent font-semibold focus:outline-none" />
+                <input value={field.description || ''} placeholder="Tooltip Description" onChange={(e) => onUpdate({ description: e.target.value })} className="w-full bg-transparent text-sm text-gray-500 focus:outline-none" />
             </div>
             <div className="flex flex-col gap-1">
                 <VisibilityBtn isVisible={field.isVisible} onToggle={() => onUpdate({ isVisible: !field.isVisible })} />
