@@ -2,7 +2,7 @@ import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
 
 const ThemeIcon = ({ theme }) => (
-    theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />
+    theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />
 );
 
 export function ThemeSwitcher() {
