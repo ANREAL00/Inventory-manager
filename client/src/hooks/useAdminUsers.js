@@ -10,6 +10,8 @@ export function useAdminUsers() {
         try {
             const { data } = await api.get('/users');
             setUsers(data.data.users);
+        } catch (e) {
+            /* ignore 403 */
         } finally {
             setLoading(false);
         }
@@ -31,7 +33,11 @@ export function useAdminUsers() {
             await fetchUsers();
             setSelectedIds([]);
         } catch (err) {
-            alert(err.response?.data?.message || 'Bulk action failed');
+            if (err.response?.status === 403) {
+                window.location.reload();
+            } else {
+                alert(err.response?.data?.message || 'Bulk action failed');
+            }
         }
     };
 

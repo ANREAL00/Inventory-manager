@@ -1,9 +1,24 @@
 import { useAdminUsers } from '../../hooks/useAdminUsers';
 import { UserTable } from '../../components/admin/UserTable';
 import { AdminToolbar } from '../../components/admin/AdminToolbar';
+import { useAuth } from '../../hooks/useAuth';
+import { ShieldAlert } from 'lucide-react';
 
 export function AdminDashboard() {
+    const { user } = useAuth();
     const { users, loading, selectedIds, handleAction, toggleSelect, toggleSelectAll } = useAdminUsers();
+
+    if (user?.role !== 'ADMIN') {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 text-center max-w-md mx-auto fade-in">
+                <div className="p-4 bg-red-100 dark:bg-red-900/30 rounded-full mb-4">
+                    <ShieldAlert size={48} className="text-red-600 dark:text-red-400" />
+                </div>
+                <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
+                <p className="text-gray-500 dark:text-gray-400">You do not have permission to view this page. This area is restricted to administrators only.</p>
+            </div>
+        );
+    }
 
     if (loading) return <div className="p-8 text-center text-gray-500">Loading users...</div>;
 
