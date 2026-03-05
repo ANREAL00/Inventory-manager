@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FieldInputRender } from './FieldInputRender';
+import { useTranslation } from 'react-i18next';
 
 const getInitialData = (fields) => {
     const initial = {};
@@ -10,6 +11,7 @@ const getInitialData = (fields) => {
 
 export function ItemForm({ fields, onSubmit, initialData = {}, readOnly = false }) {
     const [data, setData] = useState({ customId: '', ...getInitialData(fields), ...initialData });
+    const { t } = useTranslation();
 
     const handleChange = (key, val) => setData(prev => ({ ...prev, [key]: val }));
 
@@ -18,13 +20,13 @@ export function ItemForm({ fields, onSubmit, initialData = {}, readOnly = false 
         onSubmit(data);
     };
 
-    if (!fields?.length) return <div className="p-4 text-center text-gray-500 border rounded-lg">No custom fields defined for this inventory.</div>;
+    if (!fields?.length) return <div className="p-4 text-center text-gray-500 border rounded-lg">{t('no_custom_fields')}</div>;
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-1">
-                    <label className="text-sm font-medium">Custom ID</label>
+                    <label className="text-sm font-medium">{t('custom_id')}</label>
                     <input
                         value={data.customId || ''}
                         onChange={(e) => !readOnly && handleChange('customId', e.target.value)}
@@ -40,7 +42,7 @@ export function ItemForm({ fields, onSubmit, initialData = {}, readOnly = false 
             </div>
             {!readOnly && (
                 <button className="w-full py-2 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 transition-colors">
-                    Save Item
+                    {t('save_item')}
                 </button>
             )}
         </form>

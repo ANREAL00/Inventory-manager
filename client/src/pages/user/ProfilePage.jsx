@@ -24,7 +24,7 @@ export function ProfilePage() {
                 <div className="flex gap-4">
                     {user?.role === 'ADMIN' && (
                         <Link to="/admin" className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors">
-                            Admin Panel
+                            {t('admin_panel')}
                         </Link>
                     )}
                     <Link to="/inventories/new" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">

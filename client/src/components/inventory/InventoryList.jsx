@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-const TableHeader = () => (
+const TableHeader = ({ t }) => (
     <thead>
         <tr className="border-b text-left">
-            <th className="p-2">Title</th>
-            <th className="p-2">Description</th>
-            <th className="p-2">Category</th>
-            <th className="p-2">Owner</th>
-            <th className="p-2">Created</th>
+            <th className="p-2">{t('col_title')}</th>
+            <th className="p-2">{t('col_desc')}</th>
+            <th className="p-2">{t('col_category')}</th>
+            <th className="p-2">{t('col_owner')}</th>
+            <th className="p-2">{t('col_created')}</th>
         </tr>
     </thead>
 );
@@ -25,11 +26,13 @@ const InventoryRow = ({ item }) => (
 );
 
 export function InventoryList({ items }) {
-    if (items.length === 0) return <p className="text-gray-500">No inventories found.</p>;
+    const { t } = useTranslation();
+
+    if (items.length === 0) return <p className="text-gray-500">{t('no_inventories')}</p>;
 
     return (
         <table className="w-full border-collapse">
-            <TableHeader />
+            <TableHeader t={t} />
             <tbody>
                 {items.map(item => <InventoryRow key={item.id} item={item} />)}
             </tbody>

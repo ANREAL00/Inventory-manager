@@ -14,6 +14,7 @@ import { DiscussionView } from '../../components/inventory/DiscussionView';
 import { AccessSettingsView } from '../../components/inventory/AccessSettingsView';
 import { StatisticsView } from '../../components/inventory/StatisticsView';
 import { Plus, Save } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import api from '../../api';
 
 import ReactMarkdown from 'react-markdown';
@@ -30,13 +31,13 @@ const Header = ({ inventory }) => (
     </div>
 );
 
-const ItemsView = ({ inventory, canEdit, onAdd, onItemClick }) => (
+const ItemsView = ({ inventory, canEdit, onAdd, onItemClick, t }) => (
     <div className="space-y-6">
         <div className="flex justify-between items-center">
-            <h3 className="text-xl font-bold">Items</h3>
+            <h3 className="text-xl font-bold">{t('items_title')}</h3>
             {canEdit && (
                 <button onClick={onAdd} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                    <Plus size={18} /> Add Item
+                    <Plus size={18} /> {t('add_item')}
                 </button>
             )}
         </div>
@@ -48,6 +49,7 @@ export function InventoryDetailsPage() {
     const { id } = useParams();
     const { user } = useAuth();
     const { inventory, loading, refetch } = useInventoryDetails(id);
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState('items');
     const [localData, setLocalData] = useState(null);
     const [isDirty, setIsDirty] = useState(false);
@@ -66,8 +68,8 @@ export function InventoryDetailsPage() {
             setLocalData(res.data.data.inventory);
             setIsDirty(false);
         } catch (e) {
-            const msg = e.response?.data?.error || e.response?.data?.message || 'Save failed';
-            alert(e.response?.status === 409 ? 'Version conflict! Please refresh.' : `Save failed: ${msg}`);
+            const msg = e.response?.data?.error || e.response?.data?.message || t('save_failed');
+            alert(e.response?.status === 409 ? t('conflict_error') : `${t('save_failed')}: ${msg}`);
         }
         finally { setIsSaving(false); }
     };
@@ -77,7 +79,7 @@ export function InventoryDetailsPage() {
         return () => clearTimeout(timer);
     }, [localData, isDirty, isSaving]);
 
-    if (loading || !localData) return <div className="p-8 text-center text-gray-500">Loading details...</div>;
+    if (loading || !localData) return <div className="p-8 text-center text-gray-500">{t('loading_details')}</div>;
 
     const isOwner = user?.id === inventory.ownerId;
     const isAdmin = user?.role === 'ADMIN';
@@ -87,13 +89,13 @@ export function InventoryDetailsPage() {
     const canWriteItems = isAdmin || isOwner || isAuthorized;
 
     const tabs = [
-        { id: 'items', label: 'Items' },
-        { id: 'discussion', label: 'Discussion' },
-        { id: 'stats', label: 'Stats' },
-        { id: 'settings', label: 'Settings' },
-        { id: 'access', label: 'Access' },
-        { id: 'fields', label: 'Fields' },
-        { id: 'custom-id', label: 'Custom ID' }
+        { id: 'items', label: t('tab_items') },
+        { id: 'discussion', label: t('tab_discussion') },
+        { id: 'stats', label: t('tab_stats') },
+        { id: 'settings', label: t('tab_settings') },
+        { id: 'access', label: t('tab_access') },
+        { id: 'fields', label: t('tab_fields') },
+        { id: 'custom-id', label: t('tab_custom_id') }
     ].filter(t => ['items', 'discussion', 'stats'].includes(t.id) || canManageSet);
 
     const update = (f) => { setLocalData(p => ({ ...p, ...f })); setIsDirty(true); };
@@ -104,13 +106,13 @@ export function InventoryDetailsPage() {
                 <Header inventory={inventory} />
                 {canManageSet && (
                     <div className="flex items-center gap-2 text-sm text-gray-400">
-                        {isSaving ? 'Saving...' : (isDirty ? 'Unsaved changes' : 'Saved')}
+                        {isSaving ? t('status_saving') : (isDirty ? t('status_unsaved') : t('status_saved'))}
                         <button onClick={save} disabled={isSaving || !isDirty} className="p-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 transition-colors"><Save size={16} /></button>
                     </div>
                 )}
             </div>
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-            {activeTab === 'items' && <ItemsView inventory={inventory} canEdit={canWriteItems} onAdd={() => setIsModalOpen(true)} onItemClick={setSelectedItem} />}
+            {activeTab === 'items' && <ItemsView inventory={inventory} canEdit={canWriteItems} onAdd={() => setIsModalOpen(true)} onItemClick={setSelectedItem} t={t} />}
             {activeTab === 'discussion' && <DiscussionView inventoryId={id} />}
             {activeTab === 'stats' && <StatisticsView inventoryId={id} />}
             {activeTab === 'settings' && (

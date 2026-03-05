@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useComments } from '../../hooks/useComments';
 import ReactMarkdown from 'react-markdown';
+import { useComments } from '../../hooks/useComments';
+import { useTranslation } from 'react-i18next';
 
 const Comment = ({ comment }) => (
     <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border">
@@ -17,6 +18,7 @@ const Comment = ({ comment }) => (
 export function DiscussionView({ inventoryId }) {
     const { comments, postComment } = useComments(inventoryId);
     const [text, setText] = useState('');
+    const { t } = useTranslation();
 
     const submit = async (e) => {
         e.preventDefault();
@@ -27,8 +29,8 @@ export function DiscussionView({ inventoryId }) {
         <div className="space-y-4 max-w-3xl">
             <div className="space-y-4">{comments.map(c => <Comment key={c.id} comment={c} />)}</div>
             <form onSubmit={submit} className="space-y-2">
-                <textarea value={text} onChange={(e) => setText(e.target.value)} className="w-full p-3 border rounded-lg dark:bg-gray-800" placeholder="Write a comment..." rows={3} />
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-md font-bold">Post Comment</button>
+                <textarea value={text} onChange={(e) => setText(e.target.value)} className="w-full p-3 border rounded-lg dark:bg-gray-800" placeholder={t('placeholder_comment')} rows={3} />
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-md font-bold">{t('btn_post')}</button>
             </form>
         </div>
     );

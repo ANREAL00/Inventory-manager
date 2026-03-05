@@ -14,11 +14,11 @@ const Logo = () => (
 
 const UserNav = ({ user, logout, t }) => (
     <div className="flex items-center gap-4">
-        <Link to="/profile" className="flex items-center gap-2 hover:text-blue-500">
-            <User size={18} />
-            <span className="hidden sm:inline">{t('profile')}</span>
+        <Link to="/profile" className="flex items-center gap-2 hover:text-blue-500 w-24 sm:w-28">
+            <User size={18} className="shrink-0" />
+            <span className="hidden sm:inline-block truncate text-left">{t('profile')}</span>
         </Link>
-        <button onClick={logout} title={t('logout')} className="p-2 hover:text-red-500">
+        <button onClick={logout} title={t('logout')} className="p-2 hover:text-red-500 shrink-0">
             <LogOut size={18} />
         </button>
     </div>

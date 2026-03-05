@@ -1,5 +1,6 @@
 import { FieldInput } from './FieldInput';
-import { Type, AlignLeft, Hash, ImageIcon, CheckSquare, Calendar, Plus } from 'lucide-react';
+import { Type, AlignLeft, Hash, ImageIcon, CheckSquare, Calendar } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const AddBtn = ({ type, label, onClick, icon: Icon }) => (
     <button type="button" onClick={() => onClick(type)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-white dark:bg-gray-800 border rounded-full hover:bg-gray-100 transition-colors">
@@ -7,25 +8,26 @@ const AddBtn = ({ type, label, onClick, icon: Icon }) => (
     </button>
 );
 
-const FieldTypes = ({ onAdd }) => (
+const FieldTypes = ({ onAdd, t }) => (
     <div className="flex flex-wrap gap-2 pt-2">
-        <AddBtn type="STRING" label="Text" icon={Type} onClick={onAdd} />
-        <AddBtn type="TEXT" label="Multiline" icon={AlignLeft} onClick={onAdd} />
-        <AddBtn type="NUMBER" label="Number" icon={Hash} onClick={onAdd} />
-        <AddBtn type="IMAGE" label="Image/Link" icon={ImageIcon} onClick={onAdd} />
-        <AddBtn type="BOOLEAN" label="Checkbox" icon={CheckSquare} onClick={onAdd} />
-        <AddBtn type="DATE" label="Date" icon={Calendar} onClick={onAdd} />
+        <AddBtn type="STRING" label={t('type_text')} icon={Type} onClick={onAdd} />
+        <AddBtn type="TEXT" label={t('type_multiline')} icon={AlignLeft} onClick={onAdd} />
+        <AddBtn type="NUMBER" label={t('type_number')} icon={Hash} onClick={onAdd} />
+        <AddBtn type="IMAGE" label={t('type_image')} icon={ImageIcon} onClick={onAdd} />
+        <AddBtn type="BOOLEAN" label={t('type_checkbox')} icon={CheckSquare} onClick={onAdd} />
+        <AddBtn type="DATE" label={t('type_date')} icon={Calendar} onClick={onAdd} />
     </div>
 );
 
 export function FieldConfigurator({ fields, addField, updateField, removeField }) {
+    const { t } = useTranslation();
     return (
         <div className="space-y-4">
-            <div className="flex justify-between items-center"><h3 className="text-lg font-bold">Custom Fields</h3></div>
+            <div className="flex justify-between items-center"><h3 className="text-lg font-bold">{t('custom_fields')}</h3></div>
             <div className="space-y-3">
                 {fields.map((f, i) => <FieldInput key={i} field={f} onUpdate={(u) => updateField(i, u)} onRemove={() => removeField(i)} />)}
             </div>
-            <FieldTypes onAdd={addField} />
+            <FieldTypes onAdd={addField} t={t} />
         </div>
     );
 }

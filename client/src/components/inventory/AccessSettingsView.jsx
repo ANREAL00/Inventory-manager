@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import api from '../../api';
 import { UserMinus, UserPlus, Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export function AccessSettingsView({ isPublic, authorizedUsers = [], onChange }) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const timer = query.length > 1 && setTimeout(() => api.get(`/users/search?q=${query}`).then(res => setResults(res.data.users)), 300);
@@ -18,15 +20,15 @@ export function AccessSettingsView({ isPublic, authorizedUsers = [], onChange })
         <div className="space-y-8 max-w-2xl">
             <label className="flex items-center gap-3 p-4 border rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
                 <input type="checkbox" checked={isPublic} onChange={(e) => onChange({ isPublic: e.target.checked })} className="w-5 h-5 rounded border-gray-300" />
-                <div><p className="font-bold">Public Inventory</p><p className="text-sm text-gray-500">Anyone can view and add items</p></div>
+                <div><p className="font-bold">{t('label_public')}</p><p className="text-sm text-gray-500">{t('desc_public')}</p></div>
             </label>
 
             {!isPublic && (
                 <div className="space-y-4">
-                    <h3 className="font-bold border-b pb-2">Users with Access</h3>
+                    <h3 className="font-bold border-b pb-2">{t('title_access')}</h3>
                     <div className="relative">
                         <Search className="absolute left-3 top-3 text-gray-400" size={18} />
-                        <input value={query} onChange={(e) => setQuery(e.target.value)} className="w-full pl-10 pr-4 py-2.5 border rounded-lg dark:bg-gray-800" placeholder="Type name or email to add..." />
+                        <input value={query} onChange={(e) => setQuery(e.target.value)} className="w-full pl-10 pr-4 py-2.5 border rounded-lg dark:bg-gray-800" placeholder={t('placeholder_user_search')} />
                         {results.length > 0 && (
                             <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-950 border rounded-lg shadow-xl overflow-hidden">
                                 {results.map(u => <button key={u.id} onClick={() => addUser(u)} className="w-full text-left p-3 hover:bg-gray-100 flex justify-between items-center text-sm"><span>{u.name} ({u.email})</span><UserPlus size={16} /></button>)}
