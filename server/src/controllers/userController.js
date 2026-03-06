@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../db');
 
 const getUserOrThrow = async (id) => {
     const user = await prisma.user.findUnique({ where: { id } });

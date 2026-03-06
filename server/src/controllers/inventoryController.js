@@ -1,6 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
+const prisma = require('../db');
 const { generateCustomId } = require('../services/customIdService');
-const prisma = new PrismaClient();
 
 const sendResponse = (res, data, message = 'Success') => {
     res.status(200).json({ status: 'success', message, data });
@@ -162,27 +161,34 @@ exports.getAllTags = async (req, res) => {
 };
 
 exports.getInventoryStats = async (req, res) => {
-    const inv = await prisma.inventory.findUnique({ where: { id: req.params.id }, include: { items: true, fields: true } });
-    const stats = { itemCount: inv.items.length, fields: [] };
+    try {
+        const inv = await prisma.inventory.findUnique({ where: { id: req.params.id }, include: { items: true, fields: true } });
+        if (!inv) return res.status(404).json({ message: 'Inventory not found' });
 
-    inv.fields.forEach(f => {
-        const typeMap = { NUMBER: 'number', STRING: 'string' };
-        if (!typeMap[f.type]) return;
-        const values = inv.items.map(it => it[`${typeMap[f.type]}${f.index}`]).filter(v => v !== null && v !== undefined);
-        if (f.type === 'NUMBER' && values.length) {
-            stats.fields.push({ title: f.title, type: 'NUMBER', avg: values.reduce((a, b) => a + b, 0) / values.length, min: Math.min(...values), max: Math.max(...values) });
-        } else if (f.type === 'STRING' && values.length) {
-            const counts = values.reduce((acc, v) => ({ ...acc, [v]: (acc[v] || 0) + 1 }), {});
-            const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-            stats.fields.push({ title: f.title, type: 'STRING', topValue: top[0], frequency: top[1] });
-        }
-    });
-    res.json({ stats });
+        const stats = { itemCount: inv.items.length, fields: [] };
+        inv.fields.forEach(f => {
+            const typeMap = { NUMBER: 'number', STRING: 'string' };
+            if (!typeMap[f.type]) return;
+            const values = inv.items.map(it => it[`${typeMap[f.type]}${f.index}`]).filter(v => v !== null && v !== undefined);
+            if (f.type === 'NUMBER' && values.length) {
+                stats.fields.push({ title: f.title, type: 'NUMBER', avg: values.reduce((a, b) => a + b, 0) / values.length, min: Math.min(...values), max: Math.max(...values) });
+            } else if (f.type === 'STRING' && values.length) {
+                const counts = values.reduce((acc, v) => ({ ...acc, [v]: (acc[v] || 0) + 1 }), {});
+                const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+                stats.fields.push({ title: f.title, type: 'STRING', topValue: top[0], frequency: top[1] });
+            }
+        });
+        res.json({ stats });
+    } catch (err) {
+        console.error('Stats error:', err);
+        res.status(500).json({ message: 'Failed to fetch stats' });
+    }
 };
 
 exports.generateId = async (req, res) => {
     try {
         const inv = await prisma.inventory.findUnique({ where: { id: req.params.id } });
+        if (!inv) return res.status(404).json({ message: 'Inventory not found' });
         const configToUse = req.body.config || inv.customIdConfig;
         const customId = await generateCustomId(req.params.id, configToUse, true);
         res.json({ status: 'success', data: { customId } });

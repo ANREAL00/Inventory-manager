@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../db');
 const { generateCustomId } = require('../services/customIdService');
 
 const sendResponse = (res, data, msg = 'Success') => {
@@ -114,15 +113,23 @@ exports.deleteItem = async (req, res) => {
 };
 
 exports.getLikes = async (req, res) => {
-    const likes = await prisma.like.findMany({ where: { itemId: req.params.id } });
-    res.json({ likes });
+    try {
+        const likes = await prisma.like.findMany({ where: { itemId: req.params.id } });
+        res.json({ likes });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to fetch likes' });
+    }
 };
 
 exports.toggleLike = async (req, res) => {
-    const { id: itemId } = req.params;
-    const userId = req.user.id;
-    const existing = await prisma.like.findUnique({ where: { itemId_userId: { itemId, userId } } });
-    if (existing) { await prisma.like.delete({ where: { id: existing.id } }); }
-    else { await prisma.like.create({ data: { itemId, userId } }); }
-    res.status(200).json({ status: 'success' });
+    try {
+        const { id: itemId } = req.params;
+        const userId = req.user.id;
+        const existing = await prisma.like.findUnique({ where: { itemId_userId: { itemId, userId } } });
+        if (existing) { await prisma.like.delete({ where: { id: existing.id } }); }
+        else { await prisma.like.create({ data: { itemId, userId } }); }
+        res.status(200).json({ status: 'success' });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to toggle like' });
+    }
 };

@@ -37,6 +37,11 @@ app.get('/', (req, res) => {
     res.send('Inventory Manager API is running');
 });
 
+app.use((err, req, res, next) => {
+    console.error('GLOBAL ERROR:', err);
+    res.status(500).json({ status: 'error', message: err.message, stack: process.env.NODE_ENV === 'development' ? err.stack : undefined });
+});
+
 const server = http.createServer(app);
 const io = initSocket(server);
 
