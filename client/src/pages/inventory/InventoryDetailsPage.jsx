@@ -20,13 +20,20 @@ import api from '../../api';
 import ReactMarkdown from 'react-markdown';
 
 const Header = ({ inventory }) => (
-    <div className="space-y-4 mb-4">
-        <h1 className="text-4xl font-extrabold">{inventory.title}</h1>
-        <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
-            <ReactMarkdown>{inventory.description}</ReactMarkdown>
-        </div>
-        <div className="flex gap-2">
-            {inventory.tags.map(t => <span key={t.id} className="text-blue-500 font-medium">#{t.name}</span>)}
+    <div className="flex flex-col md:flex-row gap-6 mb-8">
+        {inventory.imageUrl && (
+            <div className="w-full md:w-48 h-48 rounded-xl overflow-hidden shadow-md flex-shrink-0">
+                <img src={inventory.imageUrl} alt={inventory.title} className="w-full h-full object-cover" />
+            </div>
+        )}
+        <div className="space-y-4 flex-1">
+            <h1 className="text-4xl font-extrabold">{inventory.title}</h1>
+            <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                <ReactMarkdown>{inventory.description}</ReactMarkdown>
+            </div>
+            <div className="flex gap-2">
+                {inventory.tags.map(t => <span key={t.id} className="text-blue-500 font-medium">#{t.name}</span>)}
+            </div>
         </div>
     </div>
 );
