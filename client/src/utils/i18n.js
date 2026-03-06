@@ -36,7 +36,10 @@ const resources = {
       "err_create_item": "Failed to create item", "err_update_item": "Update failed", "err_delete_item": "Delete failed", "err_conflict_item": "Conflict: Item was modified by another user.",
       "footer_text": "&copy; {{year}} Inventory Manager. Built with React & Tailwind.",
       "label_toggle_visibility": "Toggle Visibility in Table", "placeholder_field_title": "Field Title", "placeholder_tooltip": "Tooltip Description",
-      "status_searching": "Searching...", "results_for": "Results for \"{{query}}\"", "no_items": "No items found.", "no_preview": "No preview available"
+      "status_searching": "Searching...", "results_for": "Results for \"{{query}}\"", "no_items": "No items found.", "no_preview": "No preview available",
+      "label_sort_by": "Sort by", "sort_name": "Name", "sort_email": "Email", "btn_help": "Help",
+      "help_id_title": "Custom ID Format Guide", "help_fixed_desc": "Fixed Unicode text.", "help_random_desc": "Random digits/letters.", "help_guid_desc": "Standard unique ID.", "help_date_desc": "Current timestamp.", "help_sequence_desc": "Auto-incrementing number.",
+      "placeholder_id_format": "Format: {{format}}"
     }
   },
   ru: {
@@ -73,7 +76,10 @@ const resources = {
       "err_create_item": "Ошибка создания предмета", "err_update_item": "Ошибка обновления", "err_delete_item": "Ошибка удаления", "err_conflict_item": "Конфликт: Предмет был изменен другим пользователем.",
       "footer_text": "&copy; {{year}} Менеджер инвентаря. Создано на React и Tailwind.",
       "label_toggle_visibility": "Видимость в таблице", "placeholder_field_title": "Название поля", "placeholder_tooltip": "Описание (подсказка)",
-      "status_searching": "Поиск...", "results_for": "Результаты для \"{{query}}\"", "no_items": "Предметы не найдены.", "no_preview": "Нет описания"
+      "status_searching": "Поиск...", "results_for": "Результаты для \"{{query}}\"", "no_items": "Предметы не найдены.", "no_preview": "Нет описания",
+      "label_sort_by": "Сортировать по", "sort_name": "Имени", "sort_email": "Email", "btn_help": "Справка",
+      "help_id_title": "Справка по формату ID", "help_fixed_desc": "Фиксированный текст (Unicode).", "help_random_desc": "Случайные числа/буквы.", "help_guid_desc": "Стандартный уникальный ID.", "help_date_desc": "Текущая дата/время.", "help_sequence_desc": "Автоинкремент (счетчик).",
+      "placeholder_id_format": "Формат: {{format}}"
     }
   }
 };

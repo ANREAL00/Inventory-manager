@@ -4,7 +4,7 @@ import { ItemForm } from './ItemForm';
 import { useTranslation } from 'react-i18next';
 import api from '../../api';
 
-export function AddItemModal({ isOpen, onClose, inventoryId, fields, onCreated }) {
+export function AddItemModal({ isOpen, onClose, inventoryId, fields, customIdConfig, onCreated }) {
     const [initialId, setInitialId] = useState('');
     const { t } = useTranslation();
 
@@ -24,7 +24,7 @@ export function AddItemModal({ isOpen, onClose, inventoryId, fields, onCreated }
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={t('add_item_title')}>
-            <ItemForm fields={fields} onSubmit={handleSubmit} initialData={{ customId: initialId }} />
+            <ItemForm fields={fields} customIdConfig={customIdConfig} onSubmit={handleSubmit} initialData={{ customId: initialId }} />
         </Modal>
     );
 }

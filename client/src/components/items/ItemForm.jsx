@@ -9,9 +9,19 @@ const getInitialData = (fields) => {
     return initial;
 };
 
-export function ItemForm({ fields, onSubmit, initialData = {}, readOnly = false }) {
+export function ItemForm({ fields, customIdConfig = [], onSubmit, initialData = {}, readOnly = false }) {
     const [data, setData] = useState({ customId: '', ...getInitialData(fields), ...initialData });
     const { t } = useTranslation();
+
+    const config = Array.isArray(customIdConfig) ? customIdConfig : (JSON.parse(customIdConfig || '[]'));
+    const formatHint = config.map(p => {
+        if (p.type === 'fixed') return p.value;
+        if (p.type === 'date') return 'YYYY-MM-DD';
+        if (p.type === 'guid') return 'GUID';
+        if (p.type.includes('random')) return '####';
+        if (p.type === 'sequence') return 'SEQ';
+        return '';
+    }).join('-');
 
     const handleChange = (key, val) => setData(prev => ({ ...prev, [key]: val }));
 
@@ -31,8 +41,10 @@ export function ItemForm({ fields, onSubmit, initialData = {}, readOnly = false 
                         value={data.customId || ''}
                         onChange={(e) => !readOnly && handleChange('customId', e.target.value)}
                         className="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 font-mono"
+                        placeholder={t('placeholder_id_format', { format: formatHint })}
                         required
                     />
+                    <p className="text-[10px] text-gray-400 font-mono uppercase">{t('placeholder_id_format', { format: formatHint })}</p>
                 </div>
                 {fields.map(f => {
                     const typeMap = { STRING: 'string', TEXT: 'text', NUMBER: 'number', BOOLEAN: 'bool', DATE: 'date', IMAGE: 'image' };

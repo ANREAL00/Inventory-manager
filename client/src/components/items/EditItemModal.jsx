@@ -4,7 +4,7 @@ import api from '../../api';
 import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-export function EditItemModal({ isOpen, onClose, item, fields, onUpdated, canEdit }) {
+export function EditItemModal({ isOpen, onClose, item, fields, customIdConfig, onUpdated, canEdit }) {
     const { t } = useTranslation();
 
     const handleUpdate = async (data) => {
@@ -24,7 +24,7 @@ export function EditItemModal({ isOpen, onClose, item, fields, onUpdated, canEdi
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={title}>
-            <ItemForm fields={fields} initialData={item} onSubmit={handleUpdate} readOnly={!canEdit} />
+            <ItemForm fields={fields} customIdConfig={customIdConfig} initialData={item} onSubmit={handleUpdate} readOnly={!canEdit} />
             {canEdit && (
                 <button onClick={handleDelete} className="w-full mt-4 flex items-center justify-center gap-2 py-2 text-red-600 border border-red-200 rounded-md hover:bg-red-50">
                     <Trash2 size={18} /> {t('delete_item')}

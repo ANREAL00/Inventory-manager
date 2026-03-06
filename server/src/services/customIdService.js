@@ -31,7 +31,7 @@ exports.generateCustomId = async (inventoryId, configJson, isPreview = false) =>
     if (!configJson) return uuidv4();
 
     try {
-        const config = JSON.parse(configJson);
+        const config = typeof configJson === 'string' ? JSON.parse(configJson) : configJson;
         const parts = await Promise.all(config.map(part => generatePart(part, inventoryId, isPreview)));
         return parts.join('');
     } catch (e) {

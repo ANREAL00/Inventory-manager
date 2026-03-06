@@ -46,6 +46,7 @@ const TYPES = ['fixed', 'random20bit', 'random32bit', 'random6digit', 'random9di
 
 export function CustomIdConfig({ config = [], inventoryId, onChange }) {
     const [draggedIdx, setDraggedIdx] = useState(null);
+    const [showHelp, setShowHelp] = useState(false);
     const { t } = useTranslation();
 
     const handleDrop = (dropIdx) => {
@@ -61,28 +62,58 @@ export function CustomIdConfig({ config = [], inventoryId, onChange }) {
     const remove = (idx) => onChange(config.filter((_, i) => i !== idx));
     const update = (idx, u) => onChange(config.map((p, i) => i === idx ? { ...p, ...u } : p));
 
-    const typeLabelMap = {
-        fixed: t('p_fixed'),
-        random20bit: t('p_random20'),
-        random32bit: t('p_random32'),
-        random6digit: t('p_random6'),
-        random9digit: t('p_random9'),
-        guid: t('p_guid'),
-        date: t('p_date'),
-        sequence: t('p_sequence')
-    };
+    const helpItems = [
+        { id: 'fixed', label: t('p_fixed'), desc: t('help_fixed_desc') },
+        { id: 'random20bit', label: t('p_random20'), desc: t('help_random_desc') },
+        { id: 'random32bit', label: t('p_random32'), desc: t('help_random_desc') },
+        { id: 'random6digit', label: t('p_random6'), desc: t('help_random_desc') },
+        { id: 'random9digit', label: t('p_random9'), desc: t('help_random_desc') },
+        { id: 'guid', label: t('p_guid'), desc: t('help_guid_desc') },
+        { id: 'date', label: t('p_date'), desc: t('help_date_desc') },
+        { id: 'sequence', label: t('p_sequence'), desc: t('help_sequence_desc') }
+    ];
 
     return (
         <div className="space-y-6 max-w-2xl">
             <CustomIdPreview config={config} inventoryId={inventoryId} />
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {TYPES.map(t_id => <button key={t_id} onClick={() => add(t_id)} className="px-3 py-1.5 text-xs border rounded-full hover:bg-gray-50 dark:hover:bg-gray-800">{typeLabelMap[t_id]}</button>)}
+
+            <div className="flex justify-between items-center">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 flex-1 mr-4">
+                    {helpItems.map(item => (
+                        <button key={item.id} onClick={() => add(item.id)} className="px-3 py-1.5 text-xs border rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            {item.label}
+                        </button>
+                    ))}
+                </div>
+                <button
+                    onClick={() => setShowHelp(!showHelp)}
+                    className={`p-2 rounded-full border transition-all ${showHelp ? 'bg-blue-600 border-blue-600 text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+                >
+                    <Info size={20} />
+                </button>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-500 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30">
-                <Info size={16} className="text-blue-500 shrink-0" />
-                <p>{t('hint_custom_id')}</p>
+
+            {showHelp && (
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/30 rounded-xl shadow-sm animate-in fade-in zoom-in-95 duration-200">
+                    <h4 className="font-bold text-blue-900 dark:text-blue-300 mb-2 flex items-center gap-2">
+                        <Info size={16} /> {t('help_id_title')}
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {helpItems.map(item => (
+                            <div key={item.id} className="text-xs">
+                                <span className="font-bold text-blue-700 dark:text-blue-400">{item.label}:</span>
+                                <p className="text-gray-600 dark:text-gray-400">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <div className="space-y-2">
+                {config.map((p, i) => (
+                    <Part key={i} part={p} index={i} onRemove={remove} onUpdate={update} draggedIdx={draggedIdx} setDraggedIdx={setDraggedIdx} handleDrop={handleDrop} t={t} />
+                ))}
             </div>
-            <div className="space-y-2">{config.map((p, i) => <Part key={i} part={p} index={i} onRemove={remove} onUpdate={update} draggedIdx={draggedIdx} setDraggedIdx={setDraggedIdx} handleDrop={handleDrop} t={t} />)}</div>
         </div>
     );
 }

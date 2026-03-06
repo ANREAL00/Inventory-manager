@@ -9,7 +9,7 @@ const sendResponse = (res, data, message = 'Success') => {
 const getInventoryOrThrow = async (id) => {
     const inventory = await prisma.inventory.findUnique({
         where: { id },
-        include: { tags: true, fields: true, owner: true, items: true },
+        include: { tags: true, fields: true, owner: true, items: true, authorizedUsers: true },
     });
     if (!inventory) throw new Error('Inventory not found');
     return inventory;

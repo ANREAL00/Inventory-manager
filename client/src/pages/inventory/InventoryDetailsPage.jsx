@@ -133,8 +133,8 @@ export function InventoryDetailsPage() {
                     <CustomIdConfig config={(typeof localData.customIdConfig === 'string' ? JSON.parse(localData.customIdConfig) : localData.customIdConfig) || []} inventoryId={id} onChange={(c) => update({ customIdConfig: c })} />
                 </div>
             )}
-            <AddItemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} inventoryId={id} fields={inventory.fields} onCreated={refetch} />
-            <EditItemModal isOpen={!!selectedItem} onClose={() => setSelectedItem(null)} item={selectedItem} fields={inventory.fields} onUpdated={refetch} canEdit={canWriteItems} />
+            <AddItemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} inventoryId={id} fields={inventory.fields} customIdConfig={localData.customIdConfig} onCreated={refetch} />
+            <EditItemModal isOpen={!!selectedItem} onClose={() => setSelectedItem(null)} item={selectedItem} fields={inventory.fields} customIdConfig={localData.customIdConfig} onUpdated={refetch} canEdit={canWriteItems} />
         </div>
     );
 }
