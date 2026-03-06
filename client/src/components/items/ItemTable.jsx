@@ -32,6 +32,15 @@ const Row = ({ item, fields, onClick, t }) => (
 
 export function ItemTable({ items, fields, onItemClick }) {
     const { t } = useTranslation();
+
+    if (!items || items.length === 0) {
+        return (
+            <div className="py-12 text-center border rounded-lg bg-gray-50/50 dark:bg-gray-900/20 border-dashed">
+                <p className="text-gray-500 font-medium">{t('no_items')}</p>
+            </div>
+        );
+    }
+
     return (
         <div className="border rounded-lg overflow-hidden">
             <table className="w-full text-sm text-left">
