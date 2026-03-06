@@ -75,7 +75,7 @@ model Item {
   inventoryId String
   inventory   Inventory @relation(fields: [inventoryId], references: [id])
   
-  customId    String 
+  customId    String @db.VarChar(512)
   
   string1     String?
   string2     String?

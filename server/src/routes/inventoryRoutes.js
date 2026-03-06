@@ -23,6 +23,7 @@ router.post('/', inventoryController.createInventory);
 router.delete('/:id', inventoryController.deleteInventory);
 router.patch('/:id', inventoryController.updateInventory);
 
+router.get('/:id/generate-id', inventoryController.generateId);
 router.post('/:id/generate-id', inventoryController.generateId);
 
 module.exports = router;

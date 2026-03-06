@@ -29,18 +29,46 @@ const getInventoryConfig = async (inventoryId) => {
     return inventory;
 };
 
-const prepareItemData = (body, inventoryId, customId, userId) => ({
-    ...body,
-    inventoryId,
-    customId,
-    createdByUserId: userId,
-});
+const prepareItemData = (body, inventoryId, customId, userId) => {
+    return {
+        ...sanitizeItemData(body),
+        inventoryId,
+        customId,
+        createdByUserId: userId,
+    };
+};
+
+const sanitizeItemData = (data) => {
+    const sanitized = {};
+    const prefixes = ['string', 'text', 'number', 'bool', 'date', 'image'];
+    const knownKeys = ['id', 'inventoryId', 'customId', 'createdByUserId', 'version'];
+
+    Object.keys(data).forEach(key => {
+        const isDynamic = prefixes.some(p => key.startsWith(p));
+        if (isDynamic || knownKeys.includes(key)) {
+            let val = data[key];
+            if (val === '' || val === undefined) val = null;
+
+            if (key.startsWith('number') && val !== null) {
+                val = Number(val);
+                if (isNaN(val)) val = null;
+            }
+            if (key.startsWith('bool') && val !== null) val = (val === true || val === 'true' || val === 'on' || val === 1);
+            if (key.startsWith('date') && val) val = new Date(val);
+
+            if (knownKeys.includes(key) && val === null) return;
+
+            sanitized[key] = val;
+        }
+    });
+    return sanitized;
+};
 
 const performUpdate = async (id, data) => {
-    const { version, ...updateData } = data;
+    const { version, ...rest } = sanitizeItemData(data);
     return await prisma.item.update({
-        where: { id, version: version },
-        data: { ...updateData, version: { increment: 1 } }
+        where: { id, version },
+        data: { ...rest, version: { increment: 1 } }
     });
 };
 

@@ -189,8 +189,13 @@ exports.generateId = async (req, res) => {
     try {
         const inv = await prisma.inventory.findUnique({ where: { id: req.params.id } });
         if (!inv) return res.status(404).json({ message: 'Inventory not found' });
-        const configToUse = req.body.config || inv.customIdConfig;
+
+        const configToUse = req.body?.config || inv.customIdConfig;
+
         const customId = await generateCustomId(req.params.id, configToUse, true);
         res.json({ status: 'success', data: { customId } });
-    } catch (err) { res.status(500).json({ message: err.message }); }
+    } catch (err) {
+        console.error('GENERATE ID ERROR:', err);
+        res.status(500).json({ message: err.message });
+    }
 };
