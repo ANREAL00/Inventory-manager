@@ -25,9 +25,9 @@ const UserNav = ({ user, logout, t }) => (
 );
 
 const AuthNav = ({ t }) => (
-    <div className="flex gap-4 items-center">
-        <Link to="/login" className="hover:text-blue-500">{t('login')}</Link>
-        <Link to="/register" className="px-4 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+    <div className="flex gap-4 items-center min-w-[8rem] sm:min-w-[10rem] justify-end">
+        <Link to="/login" className="hover:text-blue-500 whitespace-nowrap">{t('login')}</Link>
+        <Link to="/register" className="px-4 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 whitespace-nowrap text-center w-28 sm:w-32 shrink-0">
             {t('register')}
         </Link>
     </div>

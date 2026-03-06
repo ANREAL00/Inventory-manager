@@ -39,7 +39,8 @@ const resources = {
       "status_searching": "Searching...", "results_for": "Results for \"{{query}}\"", "no_items": "No items found.", "no_preview": "No preview available",
       "label_sort_by": "Sort by", "sort_name": "Name", "sort_email": "Email", "btn_help": "Help",
       "help_id_title": "Custom ID Format Guide", "help_fixed_desc": "Fixed Unicode text.", "help_random_desc": "Random digits/letters.", "help_guid_desc": "Standard unique ID.", "help_date_desc": "Current timestamp.", "help_sequence_desc": "Auto-incrementing number.",
-      "placeholder_id_format": "Format: {{format}}"
+      "placeholder_id_format": "Format: {{format}}",
+      "click_to_upload": "Click to upload", "err_upload_failed": "Upload failed", "select_category": "Select Category"
     }
   },
   ru: {
@@ -56,7 +57,7 @@ const resources = {
       "no_inventories": "Инвентари не найдены.",
       "label_title": "Название", "placeholder_title": "напр. Моя коллекция книг",
       "label_desc": "Описание (Markdown)", "placeholder_desc": "Опишите ваш инвентарь...",
-      "label_category": "Категория", "label_illustration": "URL изображения", "placeholder_illustration": "Ссылка на Cloudinary или прямой URL",
+      "label_category": "Категория", "label_illustration": "Изображение инвентаря", "placeholder_illustration": "Нажмите для загрузки",
       "no_custom_fields": "Для этого инвентаря нет пользовательских полей.",
       "custom_id": "Пользовательский ID", "save_item": "Сохранить предмет", "yes": "Да", "no": "Нет",
       "create_inventory_title": "Создание инвентаря", "tags_label": "Теги (Enter для добавления)", "add_tag": "Добавить тег...",
@@ -79,7 +80,8 @@ const resources = {
       "status_searching": "Поиск...", "results_for": "Результаты для \"{{query}}\"", "no_items": "Предметы не найдены.", "no_preview": "Нет описания",
       "label_sort_by": "Сортировать по", "sort_name": "Имени", "sort_email": "Email", "btn_help": "Справка",
       "help_id_title": "Справка по формату ID", "help_fixed_desc": "Фиксированный текст (Unicode).", "help_random_desc": "Случайные числа/буквы.", "help_guid_desc": "Стандартный уникальный ID.", "help_date_desc": "Текущая дата/время.", "help_sequence_desc": "Автоинкремент (счетчик).",
-      "placeholder_id_format": "Формат: {{format}}"
+      "placeholder_id_format": "Формат: {{format}}",
+      "click_to_upload": "Нажмите для загрузки", "err_upload_failed": "Ошибка загрузки", "select_category": "Выберите категорию"
     }
   }
 };

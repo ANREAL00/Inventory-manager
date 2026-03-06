@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Image as ImageIcon } from 'lucide-react';
@@ -15,26 +16,35 @@ const TableHeader = ({ t }) => (
     </thead>
 );
 
-const InventoryRow = ({ item }) => (
-    <tr className="border-b hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
-        <td className="p-2">
-            <div className="w-10 h-10 rounded overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                {item.imageUrl ? (
-                    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
-                ) : (
-                    <ImageIcon className="text-gray-400" size={20} />
-                )}
-            </div>
-        </td>
-        <td className="p-2">
-            <Link to={`/inventories/${item.id}`} className="font-bold text-blue-500 hover:underline">{item.title}</Link>
-        </td>
-        <td className="p-2 text-sm text-gray-500 max-w-xs truncate">{item.description}</td>
-        <td className="p-2">{item.category}</td>
-        <td className="p-2 text-gray-500">{item.owner?.name || '-'}</td>
-        <td className="p-2 text-sm">{new Date(item.createdAt).toLocaleDateString()}</td>
-    </tr>
-);
+const InventoryRow = ({ item }) => {
+    const [imgError, setImgError] = useState(false);
+
+    return (
+        <tr className="border-b hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+            <td className="p-2">
+                <div className="w-10 h-10 rounded overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                    {item.imageUrl && !imgError ? (
+                        <img
+                            src={item.imageUrl}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                            onError={() => setImgError(true)}
+                        />
+                    ) : (
+                        <ImageIcon className="text-gray-400" size={20} />
+                    )}
+                </div>
+            </td>
+            <td className="p-2">
+                <Link to={`/inventories/${item.id}`} className="font-bold text-blue-500 hover:underline">{item.title}</Link>
+            </td>
+            <td className="p-2 text-sm text-gray-500 max-w-xs truncate">{item.description}</td>
+            <td className="p-2">{item.category}</td>
+            <td className="p-2 text-gray-500">{item.owner?.name || '-'}</td>
+            <td className="p-2 text-sm">{new Date(item.createdAt).toLocaleDateString()}</td>
+        </tr>
+    );
+};
 
 export function InventoryList({ items }) {
     const { t } = useTranslation();
