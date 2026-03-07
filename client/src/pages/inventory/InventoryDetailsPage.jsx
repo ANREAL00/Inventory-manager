@@ -73,7 +73,15 @@ export function InventoryDetailsPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
 
-    useEffect(() => { if (inventory) setLocalData(inventory); }, [inventory]);
+    useEffect(() => {
+        if (inventory && !localData) setLocalData(inventory);
+    }, [inventory, localData]);
+
+    const handleRefetch = async () => {
+        const { data } = await api.get(`/inventories/${id}`);
+        const fresh = data.data.inventory;
+        setLocalData(prev => ({ ...prev, items: fresh.items, _count: fresh._count }));
+    };
 
     const save = async () => {
         if (!localData) return;
@@ -119,7 +127,7 @@ export function InventoryDetailsPage() {
     return (
         <div className="max-width-6xl mx-auto py-8 px-4">
             <div className="flex justify-between items-start mb-6">
-                <Header inventory={inventory} />
+                <Header inventory={localData} />
                 {canManageSet && (
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                         {isSaving ? t('status_saving') : (isDirty ? t('status_unsaved') : t('status_saved'))}
@@ -128,7 +136,7 @@ export function InventoryDetailsPage() {
                 )}
             </div>
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-            {activeTab === 'items' && <ItemsView inventory={inventory} canEdit={canWriteItems} onAdd={() => setIsModalOpen(true)} onItemClick={setSelectedItem} t={t} />}
+            {activeTab === 'items' && <ItemsView inventory={localData} canEdit={canWriteItems} onAdd={() => setIsModalOpen(true)} onItemClick={setSelectedItem} t={t} />}
             {activeTab === 'discussion' && <DiscussionView inventoryId={id} />}
             {activeTab === 'stats' && <StatisticsView inventoryId={id} />}
             {activeTab === 'settings' && (
@@ -149,8 +157,8 @@ export function InventoryDetailsPage() {
                     <CustomIdConfig config={(typeof localData.customIdConfig === 'string' ? JSON.parse(localData.customIdConfig) : localData.customIdConfig) || []} inventoryId={id} onChange={(c) => update({ customIdConfig: c })} />
                 </div>
             )}
-            <AddItemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} inventoryId={id} fields={inventory.fields} customIdConfig={localData.customIdConfig} onCreated={refetch} />
-            <EditItemModal isOpen={!!selectedItem} onClose={() => setSelectedItem(null)} item={selectedItem} fields={inventory.fields} customIdConfig={localData.customIdConfig} onUpdated={refetch} canEdit={canWriteItems} />
+            <AddItemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} inventoryId={id} fields={localData.fields} customIdConfig={localData.customIdConfig} onCreated={handleRefetch} />
+            <EditItemModal isOpen={!!selectedItem} onClose={() => setSelectedItem(null)} item={selectedItem} fields={localData.fields} customIdConfig={localData.customIdConfig} onUpdated={handleRefetch} canEdit={canWriteItems} />
         </div>
     );
 }
