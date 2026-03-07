@@ -80,6 +80,6 @@ exports.getMe = async (req, res) => {
 
 exports.socialCallback = (req, res) => {
   const token = signToken(req.user.id);
-  const frontendUrl = process.env.VITE_APP_URL || 'http://localhost:5173';
+  const frontendUrl = process.env.API_URL || 'http://localhost:5173';
   res.redirect(`${frontendUrl}/auth-callback?token=${token}`);
 };
