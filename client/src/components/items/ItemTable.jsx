@@ -13,8 +13,8 @@ const getCellValue = (item, field, t) => {
 const Header = ({ fields, t }) => (
     <thead className="bg-gray-50 dark:bg-gray-900 text-xs font-semibold uppercase text-gray-500">
         <tr className="border-b">
-            <th className="p-3">{t('col_id')}</th>
             {fields.filter(f => f.isVisible).map(f => <th key={f.id} className="p-3">{f.title}</th>)}
+            <th className="p-3">{t('col_id')}</th>
             <th className="p-3 text-right">{t('col_likes')}</th>
         </tr>
     </thead>
@@ -22,10 +22,10 @@ const Header = ({ fields, t }) => (
 
 const Row = ({ item, fields, onClick, t }) => (
     <tr onClick={() => onClick(item)} className="border-b last:border-0 hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer transition-colors">
-        <td className="p-3 font-mono text-xs">{item.customId}</td>
         {fields.filter(f => f.isVisible).map(f => (
             <td key={f.id} className="p-3">{getCellValue(item, f, t)}</td>
         ))}
+        <td className="p-3 font-mono text-xs text-gray-400">{item.customId}</td>
         <td className="p-3 text-right">
             <div
                 className="flex justify-end"

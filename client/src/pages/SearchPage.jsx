@@ -40,8 +40,13 @@ export function SearchPage() {
                     <div className="space-y-4">
                         {results.items.map(it => (
                             <div key={it.id} className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
-                                <Link to={`/inventories/${it.inventoryId}`} className="font-bold text-blue-500 hover:underline">{it.customId}</Link>
-                                <p className="text-sm text-gray-500 line-clamp-2">{it.string1 || it.text1 || t('no_preview')}</p>
+                                <Link to={`/inventories/${it.inventoryId}`} className="font-bold text-lg text-blue-600 hover:underline uppercase block mb-1">
+                                    {it.string1 || it.customId}
+                                </Link>
+                                <div className="flex gap-2 text-xs text-gray-400 mb-2">
+                                    <span className="font-mono">{it.customId}</span>
+                                </div>
+                                <p className="text-sm text-gray-500 line-clamp-2">{it.description || it.text1 || t('no_preview')}</p>
                             </div>
                         ))}
                     </div>
