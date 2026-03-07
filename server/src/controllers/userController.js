@@ -75,3 +75,33 @@ exports.updateLanguage = async (req, res) => {
 exports.updateTheme = async (req, res) => {
     await updateUserData(res, req.user.id, { theme: req.body.theme }, 'Theme updated');
 };
+
+exports.getUserProfile = async (req, res) => {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: req.params.id },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                createdAt: true,
+                inventories: {
+                    select: {
+                        id: true,
+                        title: true,
+                        description: true,
+                        category: true,
+                        imageUrl: true,
+                        createdAt: true,
+                        owner: { select: { name: true } },
+                        _count: { select: { items: true } }
+                    }
+                }
+            }
+        });
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        sendResponse(res, { user });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to fetch user profile' });
+    }
+};

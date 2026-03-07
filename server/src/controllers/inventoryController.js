@@ -115,7 +115,7 @@ exports.getMyInventories = async (req, res) => {
     try {
         const inventories = await prisma.inventory.findMany({
             where: { ownerId: req.user.id },
-            include: { tags: true },
+            include: { tags: true, owner: { select: { name: true } } },
         });
         sendResponse(res, { inventories });
     } catch (err) {

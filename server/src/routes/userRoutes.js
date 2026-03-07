@@ -4,6 +4,8 @@ const userController = require('../controllers/userController');
 
 const router = express.Router();
 
+router.get('/:id/profile', userController.getUserProfile);
+
 router.use(passport.authenticate('jwt', { session: false }));
 
 const restrictToAdmin = (req, res, next) => {
