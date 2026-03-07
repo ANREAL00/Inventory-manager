@@ -2,11 +2,13 @@ import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useComments } from '../../hooks/useComments';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../hooks/useAuth';
+import { Link } from 'react-router-dom';
 
 const Comment = ({ comment }) => (
     <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border">
         <div className="flex justify-between items-center mb-2">
-            <span className="font-bold text-sm text-blue-600">{comment.user.name}</span>
+            <Link to={`/profile/${comment.userId}`} className="font-bold text-sm text-blue-600 hover:underline">{comment.user.name}</Link>
             <span className="text-xs text-gray-500">{new Date(comment.createdAt).toLocaleString()}</span>
         </div>
         <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -18,6 +20,7 @@ const Comment = ({ comment }) => (
 export function DiscussionView({ inventoryId }) {
     const { comments, postComment } = useComments(inventoryId);
     const [text, setText] = useState('');
+    const { user } = useAuth();
     const { t } = useTranslation();
 
     const submit = async (e) => {
@@ -28,10 +31,19 @@ export function DiscussionView({ inventoryId }) {
     return (
         <div className="space-y-4 max-w-3xl">
             <div className="space-y-4">{comments.map(c => <Comment key={c.id} comment={c} />)}</div>
-            <form onSubmit={submit} className="space-y-2">
-                <textarea value={text} onChange={(e) => setText(e.target.value)} className="w-full p-3 border rounded-lg dark:bg-gray-800" placeholder={t('placeholder_comment')} rows={3} />
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-md font-bold">{t('btn_post')}</button>
-            </form>
+
+            {user ? (
+                <form onSubmit={submit} className="space-y-2">
+                    <textarea value={text} onChange={(e) => setText(e.target.value)} className="w-full p-3 border rounded-lg dark:bg-gray-800" placeholder={t('placeholder_comment')} rows={3} />
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded-md font-bold">{t('btn_post')}</button>
+                </form>
+            ) : (
+                <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-dashed text-center">
+                    <p className="text-sm text-gray-500">
+                        {t('comment_auth_prompt_before')} <Link to="/login" className="text-blue-600 font-bold hover:underline">{t('login')}</Link> {t('comment_auth_prompt_after')}
+                    </p>
+                </div>
+            )}
         </div>
     );
 }
