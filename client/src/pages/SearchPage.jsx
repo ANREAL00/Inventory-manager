@@ -46,7 +46,14 @@ export function SearchPage() {
                                 <div className="flex gap-2 text-xs text-gray-400 mb-2">
                                     <span className="font-mono">{it.customId}</span>
                                 </div>
-                                <p className="text-sm text-gray-500 line-clamp-2">{it.description || it.text1 || t('no_preview')}</p>
+                                <div className="flex gap-4">
+                                    {(it.image1 || it.image2 || it.image3) && (
+                                        <img src={it.image1 || it.image2 || it.image3} className="w-20 h-20 object-cover rounded border" />
+                                    )}
+                                    <div className="flex-1">
+                                        <p className="text-sm text-gray-500 line-clamp-2">{it.description || it.text1 || t('no_preview')}</p>
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>

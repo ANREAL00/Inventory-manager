@@ -1,5 +1,7 @@
 import { LikeButton } from './LikeButton';
 import { useTranslation } from 'react-i18next';
+import { Image as ImageIcon } from 'lucide-react';
+import { useState } from 'react';
 
 const getCellValue = (item, field, t) => {
     const typeMap = { STRING: 'string', TEXT: 'text', NUMBER: 'number', BOOLEAN: 'bool', DATE: 'date', IMAGE: 'image' };
@@ -7,7 +9,14 @@ const getCellValue = (item, field, t) => {
     const val = item[key];
     if (field.type === 'BOOLEAN') return val ? t('yes') : t('no');
     if (field.type === 'DATE') return val ? new Date(val).toLocaleDateString() : '-';
+    if (field.type === 'IMAGE') return val; // Handled specially in cell render
     return val ?? '-';
+};
+
+const ImageCell = ({ url }) => {
+    const [err, setErr] = useState(false);
+    if (!url || err) return <div className="p-1 bg-gray-100 dark:bg-gray-800 rounded w-12 h-12 flex items-center justify-center"><ImageIcon className="text-gray-300" size={16} /></div>;
+    return <img src={url} className="w-12 h-12 object-cover rounded shadow-sm" onError={() => setErr(true)} />;
 };
 
 const Header = ({ fields, t }) => (
@@ -23,7 +32,9 @@ const Header = ({ fields, t }) => (
 const Row = ({ item, fields, onClick, t }) => (
     <tr onClick={() => onClick(item)} className="border-b last:border-0 hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer transition-colors">
         {fields.filter(f => f.isVisible).map(f => (
-            <td key={f.id} className="p-3">{getCellValue(item, f, t)}</td>
+            <td key={f.id} className="p-3">
+                {f.type === 'IMAGE' ? <ImageCell url={getCellValue(item, f, t)} /> : getCellValue(item, f, t)}
+            </td>
         ))}
         <td className="p-3 font-mono text-xs text-gray-400">{item.customId}</td>
         <td className="p-3 text-right">
