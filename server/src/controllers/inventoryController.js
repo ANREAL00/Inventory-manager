@@ -8,7 +8,13 @@ const sendResponse = (res, data, message = 'Success') => {
 const getInventoryOrThrow = async (id) => {
     const inventory = await prisma.inventory.findUnique({
         where: { id },
-        include: { tags: true, fields: true, owner: true, items: true, authorizedUsers: true },
+        include: {
+            tags: true,
+            fields: { orderBy: { position: 'asc' } },
+            owner: true,
+            items: true,
+            authorizedUsers: true
+        },
     });
     if (!inventory) throw new Error('Inventory not found');
     return inventory;
@@ -36,7 +42,7 @@ exports.createInventory = async (req, res) => {
                 category,
                 ownerId: req.user.id,
                 tags: { connectOrCreate: tagConnect },
-                fields: { create: req.body.fields || [] },
+                fields: { create: (req.body.fields || []).map((f, i) => ({ ...f, position: i })) },
             },
             include: { tags: true, fields: true },
         });
@@ -96,7 +102,7 @@ exports.updateInventory = async (req, res) => {
 
         const updateData = { title, description, category, imageUrl, isPublic, version: { increment: 1 } };
         if (customIdConfig !== undefined) updateData.customIdConfig = typeof customIdConfig === 'string' ? customIdConfig : JSON.stringify(customIdConfig);
-        if (fields) updateData.fields = { deleteMany: {}, create: fields.map(({ id, inventoryId, ...f }) => f) };
+        if (fields) updateData.fields = { deleteMany: {}, create: fields.map(({ id, inventoryId, ...f }, i) => ({ ...f, position: i })) };
         if (authorizedUsers) updateData.authorizedUsers = { set: authorizedUsers.map(u => ({ id: u.id })) };
 
         const updated = await prisma.inventory.update({

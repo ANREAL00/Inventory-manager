@@ -149,7 +149,13 @@ export function InventoryDetailsPage() {
             )}
             {activeTab === 'fields' && (
                 <div className="bg-white dark:bg-gray-950 p-6 border rounded-xl max-w-2xl">
-                    <FieldConfigurator fields={localData.fields} addField={(t) => update({ fields: [...localData.fields, { type: t, title: '', index: localData.fields.filter(f => f.type === t).length + 1, isVisible: true }] })} updateField={(idx, u) => update({ fields: localData.fields.map((f, i) => i === idx ? { ...f, ...u } : f) })} removeField={(idx) => update({ fields: localData.fields.filter((_, i) => i !== idx) })} />
+                    <FieldConfigurator
+                        fields={localData.fields}
+                        reorderFields={(f) => update({ fields: f })}
+                        addField={(t) => update({ fields: [...localData.fields, { id: `new-${Date.now()}`, type: t, title: '', index: localData.fields.filter(f => f.type === t).length + 1, isVisible: true }] })}
+                        updateField={(idx, u) => update({ fields: localData.fields.map((f, i) => i === idx ? { ...f, ...u } : f) })}
+                        removeField={(idx) => update({ fields: localData.fields.filter((_, i) => i !== idx) })}
+                    />
                 </div>
             )}
             {activeTab === 'custom-id' && (

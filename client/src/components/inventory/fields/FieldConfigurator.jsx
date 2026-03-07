@@ -19,14 +19,20 @@ const FieldTypes = ({ onAdd, t }) => (
     </div>
 );
 
-export function FieldConfigurator({ fields, addField, updateField, removeField }) {
+import { Reorder } from 'framer-motion';
+
+export function FieldConfigurator({ fields, addField, updateField, removeField, reorderFields }) {
     const { t } = useTranslation();
     return (
         <div className="space-y-4">
             <div className="flex justify-between items-center"><h3 className="text-lg font-bold">{t('custom_fields')}</h3></div>
-            <div className="space-y-3">
-                {fields.map((f, i) => <FieldInput key={i} field={f} onUpdate={(u) => updateField(i, u)} onRemove={() => removeField(i)} />)}
-            </div>
+            <Reorder.Group axis="y" values={fields} onReorder={reorderFields} className="space-y-3">
+                {fields.map((f, i) => (
+                    <Reorder.Item key={f.id || i} value={f}>
+                        <FieldInput field={f} onUpdate={(u) => updateField(i, u)} onRemove={() => removeField(i)} />
+                    </Reorder.Item>
+                ))}
+            </Reorder.Group>
             <FieldTypes onAdd={addField} t={t} />
         </div>
     );

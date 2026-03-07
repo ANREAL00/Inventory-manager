@@ -9,8 +9,8 @@ export function useFieldConfiguration(initialFields = []) {
 
     const addField = (type) => {
         if (getCountByType(type) >= MAX_PER_TYPE) return alert(`Max ${MAX_PER_TYPE} ${type} fields allowed`);
-        const newField = { type, title: '', description: '', isVisible: true, index: getCountByType(type) + 1 };
-        setFields([...fields, newField]);
+        const id = `new-${Date.now()}`;
+        setFields([...fields, { id, type, title: '', description: '', isVisible: true, index: getCountByType(type) + 1 }]);
     };
 
     const updateField = (index, updates) => {
@@ -19,5 +19,7 @@ export function useFieldConfiguration(initialFields = []) {
 
     const removeField = (index) => setFields(fields.filter((_, i) => i !== index));
 
-    return { fields, addField, updateField, removeField };
+    const reorderFields = (newFields) => setFields(newFields);
+
+    return { fields, addField, updateField, removeField, reorderFields };
 }
