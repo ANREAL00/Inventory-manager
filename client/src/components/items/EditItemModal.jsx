@@ -18,9 +18,11 @@ export function EditItemModal({ isOpen, onClose, item, fields, customIdConfig, o
         catch (e) { alert(t('err_delete_item')); }
     };
 
+    const truncateId = (id) => (id?.length > 20 ? `${id.slice(0, 20)}...` : id);
+
     const title = canEdit
-        ? `${t('edit_item_title')}: ${item?.customId}`
-        : `${t('view_item_title')}: ${item?.customId}`;
+        ? `${t('edit_item_title')}: ${truncateId(item?.customId)}`
+        : `${t('view_item_title')}: ${truncateId(item?.customId)}`;
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={title}>

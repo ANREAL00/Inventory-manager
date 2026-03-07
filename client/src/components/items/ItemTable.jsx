@@ -30,6 +30,8 @@ const Header = ({ fields, t }) => (
     </thead>
 );
 
+const truncateId = (id) => (id?.length > 10 ? `${id.slice(0, 10)}...` : id);
+
 const Row = ({ item, fields, onClick, t }) => (
     <tr onClick={() => onClick(item)} className="border-b last:border-0 hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer transition-colors">
         {fields.filter(f => f.isVisible).map(f => (
@@ -37,7 +39,7 @@ const Row = ({ item, fields, onClick, t }) => (
                 {f.type === 'IMAGE' ? <ImageCell url={getCellValue(item, f, t)} /> : getCellValue(item, f, t)}
             </td>
         ))}
-        <td className="p-3 font-mono text-xs text-gray-400">{item.customId}</td>
+        <td className="p-3 font-mono text-xs text-gray-400" title={item.customId}>{truncateId(item.customId)}</td>
         <td className="p-3 text-right">
             <div
                 className="flex justify-end"
