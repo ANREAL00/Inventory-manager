@@ -14,10 +14,9 @@ exports.uploadImage = async (req, res) => {
 
         res.status(200).json({ status: 'success', url });
     } catch (err) {
-        console.error('Upload Error:', err);
-        if (req.file) {
-            fs.unlink(req.file.path, () => { });
+        if (req.file && fs.existsSync(req.file.path)) {
+            fs.unlinkSync(req.file.path);
         }
-        res.status(500).json({ message: 'Upload failed', error: err.message });
+        res.status(500).json({ status: 'error', message: 'Upload failed', error: err.message });
     }
 };

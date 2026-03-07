@@ -12,7 +12,7 @@ const uploadFile = async (filePath) => {
         const result = await cloudinary.uploader.upload(filePath, {
             folder: 'inventory-manager',
         });
-        fs.unlinkSync(filePath);
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
         return result.secure_url;
     } catch (error) {
         if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
