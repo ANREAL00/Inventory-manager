@@ -34,7 +34,7 @@ export function SearchPage() {
     return (
         <div className="space-y-12 py-8">
             <h1 className="text-3xl font-extrabold">{t('results_for', { query })}</h1>
-            <Section title={t('owned_inventories')}><InventoryList items={results.inventories} /></Section>
+            <Section title={t('inventories_title')}><InventoryList items={results.inventories} /></Section>
             <Section title={t('items_title')}>
                 {results.items.length > 0 ? (
                     <div className="space-y-4">
