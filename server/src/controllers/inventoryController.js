@@ -108,7 +108,7 @@ exports.updateInventory = async (req, res) => {
         const updated = await prisma.inventory.update({
             where: { id: req.params.id, version },
             data: updateData,
-            include: { tags: true, fields: true, authorizedUsers: true, owner: { select: { name: true } } },
+            include: { tags: true, fields: { orderBy: { position: 'asc' } }, authorizedUsers: true, owner: { select: { name: true } } },
         });
         sendResponse(res, { inventory: updated }, 'Inventory updated');
     } catch (err) {
