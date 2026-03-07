@@ -24,7 +24,7 @@ export function EditItemModal({ isOpen, onClose, item, fields, customIdConfig, o
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={title}>
-            <ItemForm fields={fields} customIdConfig={customIdConfig} initialData={item} onSubmit={handleUpdate} readOnly={!canEdit} />
+            <ItemForm key={item?.id} fields={fields} customIdConfig={customIdConfig} initialData={item} onSubmit={handleUpdate} readOnly={!canEdit} />
             {canEdit && (
                 <button onClick={handleDelete} className="w-full mt-4 flex items-center justify-center gap-2 py-2 text-red-600 border border-red-200 rounded-md hover:bg-red-50">
                     <Trash2 size={18} /> {t('delete_item')}

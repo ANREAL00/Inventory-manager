@@ -1,7 +1,7 @@
 import { LikeButton } from './LikeButton';
 import { useTranslation } from 'react-i18next';
 import { Image as ImageIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const getCellValue = (item, field, t) => {
     const typeMap = { STRING: 'string', TEXT: 'text', NUMBER: 'number', BOOLEAN: 'bool', DATE: 'date', IMAGE: 'image' };
@@ -9,12 +9,13 @@ const getCellValue = (item, field, t) => {
     const val = item[key];
     if (field.type === 'BOOLEAN') return val ? t('yes') : t('no');
     if (field.type === 'DATE') return val ? new Date(val).toLocaleDateString() : '-';
-    if (field.type === 'IMAGE') return val; // Handled specially in cell render
+    if (field.type === 'IMAGE') return val;
     return val ?? '-';
 };
 
 const ImageCell = ({ url }) => {
     const [err, setErr] = useState(false);
+    useEffect(() => setErr(false), [url]);
     if (!url || err) return <div className="p-1 bg-gray-100 dark:bg-gray-800 rounded w-12 h-12 flex items-center justify-center"><ImageIcon className="text-gray-300" size={16} /></div>;
     return <img src={url} className="w-12 h-12 object-cover rounded shadow-sm" onError={() => setErr(true)} />;
 };
