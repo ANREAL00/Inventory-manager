@@ -70,16 +70,18 @@ const socialHandler = async (profile, done, type) => {
   } catch (err) { return done(err); }
 };
 
+const apiBase = process.env.API_URL || 'http://localhost:3001';
+
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID || 'id',
   clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'secret',
-  callbackURL: "/api/auth/google/callback"
+  callbackURL: `${apiBase}/api/auth/google/callback`
 }, (at, rt, p, d) => socialHandler(p, d, 'google')));
 
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_APP_ID || 'id',
   clientSecret: process.env.FACEBOOK_APP_SECRET || 'secret',
-  callbackURL: "/api/auth/facebook/callback",
+  callbackURL: `${apiBase}/api/auth/facebook/callback`,
   profileFields: ['id', 'displayName', 'emails']
 }, (at, rt, p, d) => socialHandler(p, d, 'facebook')));
 
