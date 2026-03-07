@@ -35,17 +35,19 @@ export function ItemForm({ fields, customIdConfig = [], onSubmit, initialData = 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-4">
-                <div className="space-y-1">
-                    <label className="text-sm font-medium">{t('custom_id')}</label>
-                    <input
-                        value={data.customId || ''}
-                        onChange={(e) => !readOnly && handleChange('customId', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 font-mono"
-                        placeholder={t('placeholder_id_format', { format: formatHint })}
-                        required
-                    />
-                    <p className="text-[10px] text-gray-400 font-mono uppercase">{t('placeholder_id_format', { format: formatHint })}</p>
-                </div>
+                {initialData.id && (
+                    <div className="space-y-1">
+                        <label className="text-sm font-medium">{t('custom_id')}</label>
+                        <input
+                            value={data.customId || ''}
+                            onChange={(e) => !readOnly && handleChange('customId', e.target.value)}
+                            className="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 font-mono"
+                            placeholder={t('placeholder_id_format', { format: formatHint })}
+                            required
+                        />
+                        <p className="text-[10px] text-gray-400 font-mono uppercase">{t('placeholder_id_format', { format: formatHint })}</p>
+                    </div>
+                )}
                 {fields.map(f => {
                     const typeMap = { STRING: 'string', TEXT: 'text', NUMBER: 'number', BOOLEAN: 'bool', DATE: 'date', IMAGE: 'image' };
                     const key = `${typeMap[f.type]}${f.index}`;

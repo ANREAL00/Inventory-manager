@@ -1,16 +1,10 @@
-import { useState, useEffect } from 'react';
 import { Modal } from '../ui/Modal';
 import { ItemForm } from './ItemForm';
 import { useTranslation } from 'react-i18next';
 import api from '../../api';
 
 export function AddItemModal({ isOpen, onClose, inventoryId, fields, customIdConfig, onCreated }) {
-    const [initialId, setInitialId] = useState('');
     const { t } = useTranslation();
-
-    useEffect(() => {
-        if (isOpen) api.get(`/inventories/${inventoryId}/generate-id`).then(res => setInitialId(res.data.data.customId));
-    }, [isOpen, inventoryId]);
 
     const handleSubmit = async (itemData) => {
         try {
@@ -24,7 +18,7 @@ export function AddItemModal({ isOpen, onClose, inventoryId, fields, customIdCon
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={t('add_item_title')}>
-            <ItemForm fields={fields} customIdConfig={customIdConfig} onSubmit={handleSubmit} initialData={{ customId: initialId }} />
+            <ItemForm fields={fields} customIdConfig={customIdConfig} onSubmit={handleSubmit} />
         </Modal>
     );
 }
