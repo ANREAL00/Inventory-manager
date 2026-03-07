@@ -25,15 +25,15 @@ export function ProfilePage() {
         if (l1 || l2) return <div className="p-8 text-center text-gray-500">{t('loading_details')}</div>;
         return (
             <div className="max-w-4xl mx-auto">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-extrabold">{t('my_dashboard')}</h1>
-                    <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+                    <h1 className="text-2xl sm:text-3xl font-extrabold">{t('my_dashboard')}</h1>
+                    <div className="flex gap-2 sm:gap-4 flex-wrap">
                         {authUser?.role === 'ADMIN' && (
-                            <Link to="/admin" className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors">
+                            <Link to="/admin" className="px-3 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-sm sm:text-base">
                                 {t('admin_panel')}
                             </Link>
                         )}
-                        <Link to="/inventories/new" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        <Link to="/inventories/new" className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm sm:text-base">
                             {t('create_new')}
                         </Link>
                     </div>

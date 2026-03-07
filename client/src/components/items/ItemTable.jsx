@@ -63,8 +63,8 @@ export function ItemTable({ items, fields, onItemClick }) {
     }
 
     return (
-        <div className="border rounded-lg overflow-hidden">
-            <table className="w-full text-sm text-left">
+        <div className="border rounded-lg overflow-hidden overflow-x-auto">
+            <table className="w-full text-xs sm:text-sm text-left min-w-[500px]">
                 <Header fields={fields} t={t} />
                 <tbody>{items.map(it => <Row key={it.id} item={it} fields={fields} onClick={onItemClick} t={t} />)}</tbody>
             </table>

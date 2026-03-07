@@ -23,9 +23,9 @@ const Header = ({ inventory }) => {
     const [imgError, setImgError] = useState(false);
 
     return (
-        <div className="flex flex-col md:flex-row gap-6 mb-8">
+        <div className="flex flex-col md:flex-row gap-4 sm:gap-6 mb-6 sm:mb-8">
             {inventory.imageUrl && !imgError && (
-                <div className="w-full md:w-48 h-48 rounded-xl overflow-hidden shadow-md flex-shrink-0">
+                <div className="w-full sm:w-40 md:w-48 h-40 sm:h-48 rounded-xl overflow-hidden shadow-md flex-shrink-0">
                     <img
                         src={inventory.imageUrl}
                         alt={inventory.title}
@@ -34,13 +34,13 @@ const Header = ({ inventory }) => {
                     />
                 </div>
             )}
-            <div className="space-y-4 flex-1">
-                <h1 className="text-4xl font-extrabold">{inventory.title}</h1>
-                <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+            <div className="space-y-3 flex-1">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold">{inventory.title}</h1>
+                <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 text-sm sm:text-base">
                     <ReactMarkdown>{inventory.description}</ReactMarkdown>
                 </div>
-                <div className="flex gap-2">
-                    {inventory.tags.map(t => <span key={t.id} className="text-blue-500 font-medium">#{t.name}</span>)}
+                <div className="flex flex-wrap gap-2">
+                    {inventory.tags.map(t => <span key={t.id} className="text-blue-500 font-medium text-sm">#{t.name}</span>)}
                 </div>
             </div>
         </div>
@@ -48,12 +48,12 @@ const Header = ({ inventory }) => {
 };
 
 const ItemsView = ({ inventory, canEdit, onAdd, onItemClick, t }) => (
-    <div className="space-y-6">
-        <div className="flex justify-between items-center">
-            <h3 className="text-xl font-bold">{t('items_title')}</h3>
+    <div className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-3">
+            <h3 className="text-lg sm:text-xl font-bold">{t('items_title')}</h3>
             {canEdit && (
-                <button onClick={onAdd} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                    <Plus size={18} /> {t('add_item')}
+                <button onClick={onAdd} className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm sm:text-base shrink-0">
+                    <Plus size={16} /> {t('add_item')}
                 </button>
             )}
         </div>
@@ -125,11 +125,11 @@ export function InventoryDetailsPage() {
     const update = (f) => { setLocalData(p => ({ ...p, ...f })); setIsDirty(true); };
 
     return (
-        <div className="max-width-6xl mx-auto py-8 px-4">
-            <div className="flex justify-between items-start mb-6">
+        <div className="max-width-6xl mx-auto py-4 sm:py-8 px-0 sm:px-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6">
                 <Header inventory={localData} />
                 {canManageSet && (
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <div className="flex items-center gap-2 text-sm text-gray-400 shrink-0">
                         {isSaving ? t('status_saving') : (isDirty ? t('status_unsaved') : t('status_saved'))}
                         <button onClick={save} disabled={isSaving || !isDirty} className="p-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 transition-colors"><Save size={16} /></button>
                     </div>

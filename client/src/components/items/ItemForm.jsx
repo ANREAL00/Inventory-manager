@@ -13,7 +13,7 @@ export function ItemForm({ fields, customIdConfig = [], onSubmit, initialData = 
     const [data, setData] = useState({ customId: '', ...getInitialData(fields), ...initialData });
     const { t } = useTranslation();
 
-    const config = Array.isArray(customIdConfig) ? customIdConfig : (JSON.parse(customIdConfig || '[]'));
+    const config = Array.isArray(customIdConfig) ? customIdConfig : (JSON.parse(customIdConfig || '[]') || []);
     const formatHint = config.map(p => {
         if (p.type === 'fixed') return p.value;
         if (p.type === 'date') return 'YYYY-MM-DD';

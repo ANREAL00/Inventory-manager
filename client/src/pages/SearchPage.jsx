@@ -32,26 +32,26 @@ export function SearchPage() {
     if (loading) return <div className="p-8 text-center text-gray-500">{t('status_searching')}</div>;
 
     return (
-        <div className="space-y-12 py-8">
-            <h1 className="text-3xl font-extrabold">{t('results_for', { query })}</h1>
+        <div className="space-y-8 sm:space-y-12 py-4 sm:py-8">
+            <h1 className="text-2xl sm:text-3xl font-extrabold">{t('results_for', { query })}</h1>
             <Section title={t('inventories_title')}><InventoryList items={results.inventories} /></Section>
             <Section title={t('items_title')}>
                 {results.items.length > 0 ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                         {results.items.map(it => (
-                            <div key={it.id} className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
-                                <Link to={`/inventories/${it.inventoryId}`} className="font-bold text-lg text-blue-600 hover:underline capitalize block mb-1">
+                            <div key={it.id} className="p-3 sm:p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+                                <Link to={`/inventories/${it.inventoryId}`} className="font-bold text-base sm:text-lg text-blue-600 hover:underline capitalize block mb-1">
                                     {it.string1 || it.customId}
                                 </Link>
                                 <div className="flex gap-2 text-xs text-gray-400 mb-2">
                                     <span className="font-mono">{it.customId}</span>
                                 </div>
-                                <div className="flex gap-4">
+                                <div className="flex gap-3 sm:gap-4">
                                     {(it.image1 || it.image2 || it.image3) && (
-                                        <img src={it.image1 || it.image2 || it.image3} className="w-20 h-20 object-cover rounded border" />
+                                        <img src={it.image1 || it.image2 || it.image3} className="w-14 h-14 sm:w-20 sm:h-20 object-cover rounded border shrink-0" />
                                     )}
-                                    <div className="flex-1">
-                                        <p className="text-sm text-gray-500 line-clamp-2">{it.description || it.text1 || t('no_preview')}</p>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs sm:text-sm text-gray-500 line-clamp-2">{it.description || it.text1 || t('no_preview')}</p>
                                     </div>
                                 </div>
                             </div>

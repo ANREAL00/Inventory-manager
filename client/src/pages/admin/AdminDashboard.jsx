@@ -26,7 +26,7 @@ export function AdminDashboard() {
 
     return (
         <div className="max-w-6xl mx-auto space-y-4">
-            <h1 className="text-3xl font-extrabold px-1">{t('user_management')}</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold px-1">{t('user_management')}</h1>
             <AdminToolbar onAction={handleAction} selectedCount={selectedIds.length} />
             <UserTable
                 users={users}

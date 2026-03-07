@@ -47,8 +47,8 @@ export function LoginForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 max-w-sm mx-auto p-6 border rounded-lg shadow-sm">
-            <h2 className="text-2xl font-bold text-center">Login</h2>
+        <form onSubmit={handleSubmit} className="space-y-4 w-full sm:max-w-sm mx-auto p-4 sm:p-6 border rounded-lg shadow-sm">
+            <h2 className="text-xl sm:text-2xl font-bold text-center">Login</h2>
             <FormInput label="Email" type="email" value={email} onChange={setEmail} />
             <FormInput label="Password" type="password" value={password} onChange={setPassword} />
             <SubmitButton loading={loading} />
