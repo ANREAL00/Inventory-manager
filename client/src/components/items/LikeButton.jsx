@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 
 export function LikeButton({ itemId }) {
     const { user } = useAuth();
-    const { likes, toggle } = useLikes(itemId);
+    const { likes, toggle } = useLikes(itemId, user?.id);
     const isLiked = likes.some(l => l.userId === user?.id);
 
     return (

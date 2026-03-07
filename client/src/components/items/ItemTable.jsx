@@ -26,7 +26,14 @@ const Row = ({ item, fields, onClick, t }) => (
         {fields.filter(f => f.isVisible).map(f => (
             <td key={f.id} className="p-3">{getCellValue(item, f, t)}</td>
         ))}
-        <td className="p-3 text-right"><div className="flex justify-end"><LikeButton itemId={item.id} /></div></td>
+        <td className="p-3 text-right">
+            <div
+                className="flex justify-end"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <LikeButton itemId={item.id} />
+            </div>
+        </td>
     </tr>
 );
 
