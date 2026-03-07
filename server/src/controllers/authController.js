@@ -80,6 +80,7 @@ exports.getMe = async (req, res) => {
 
 exports.socialCallback = (req, res) => {
   const token = signToken(req.user.id);
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const rawUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const frontendUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`;
   res.redirect(`${frontendUrl}/auth-callback?token=${token}`);
 };
