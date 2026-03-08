@@ -153,17 +153,13 @@ exports.updateInventory = async (req, res) => {
         if (fields) updateData.fields = { deleteMany: {}, create: fields.map(({ id, inventoryId, ...f }, i) => ({ ...f, position: i })) };
         if (authorizedUsers) updateData.authorizedUsers = { set: authorizedUsers.map(u => ({ id: u.id })) };
 
-        const updateResult = await prisma.inventory.updateMany({
-            where: { id: req.params.id, version },
-            data: updateData,
-        });
-
-        if (updateResult.count === 0) {
+        if (typeof version === 'number' && version !== inventory.version) {
             return res.status(409).json({ message: 'Conflict: Inventory was modified by another user' });
         }
 
-        const updated = await prisma.inventory.findUnique({
+        const updated = await prisma.inventory.update({
             where: { id: req.params.id },
+            data: updateData,
             include: {
                 tags: true,
                 fields: { orderBy: { position: 'asc' } },
