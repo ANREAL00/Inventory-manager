@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 const TableHeader = ({ onSelectAll, allSelected }) => (
     <thead className="bg-gray-50 dark:bg-gray-900 text-left text-xs uppercase text-gray-500">
         <tr className="border-b">
@@ -17,8 +18,10 @@ const UserRow = ({ user, isSelected, onToggle }) => (
             <input type="checkbox" checked={isSelected} onChange={() => onToggle(user.id)} className="rounded" />
         </td>
         <td className="p-3 font-medium">
-            <div>{user.name}</div>
-            <div className="text-xs text-gray-500">{user.email}</div>
+            <Link to={`/profile/${user.id}`} className="block">
+                <div className="hover:underline">{user.name}</div>
+                <div className="text-xs text-gray-500">{user.email}</div>
+            </Link>
         </td>
         <td className="p-3">
             <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}>
