@@ -50,9 +50,12 @@ export function ProfilePage() {
     const [ownedSort, setOwnedSort] = useState('created_desc');
     const [sharedSearch, setSharedSearch] = useState('');
     const [sharedSort, setSharedSort] = useState('created_desc');
+    const [otherSearch, setOtherSearch] = useState('');
+    const [otherSort, setOtherSort] = useState('created_desc');
 
     const ownedView = useFilteredSorted(myOwned, ownedSearch, ownedSort);
     const sharedView = useFilteredSorted(myShared, sharedSearch, sharedSort);
+    const otherView = useFilteredSorted(otherUser?.inventories || [], otherSearch, otherSort);
 
     if (isMe) {
         if (l1 || l2) return <div className="p-8 text-center text-gray-500">{t('loading_details')}</div>;
@@ -104,7 +107,13 @@ export function ProfilePage() {
             </div>
 
             <SectionTitle title={t('owned_inventories')} />
-            <InventoryList items={otherUser.inventories} />
+            <Controls
+                search={otherSearch}
+                onSearchChange={setOtherSearch}
+                sort={otherSort}
+                onSortChange={setOtherSort}
+            />
+            <InventoryList items={otherView} />
         </div>
     );
 }

@@ -28,7 +28,7 @@ const checkAccess = (user, inventory) => {
 
 exports.createInventory = async (req, res) => {
     try {
-        const { title, description, category, tags = [] } = req.body;
+        const { title, description, category, imageUrl, tags = [] } = req.body;
 
         const tagConnect = tags.map((name) => ({
             where: { name },
@@ -40,6 +40,7 @@ exports.createInventory = async (req, res) => {
                 title,
                 description,
                 category,
+                imageUrl,
                 ownerId: req.user.id,
                 tags: { connectOrCreate: tagConnect },
                 fields: { create: (req.body.fields || []).map((f, i) => ({ ...f, position: i })) },
