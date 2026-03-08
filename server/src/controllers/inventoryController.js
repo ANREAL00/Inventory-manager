@@ -84,18 +84,57 @@ exports.deleteInventory = async (req, res) => {
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        const result = await prisma.inventory.deleteMany({
-            where: { id: req.params.id, version: inventory.version },
+        const deleteResult = await prisma.$transaction(async (tx) => {
+            await tx.like.deleteMany({
+                where: { item: { inventoryId: inventory.id } },
+            });
+
+            await tx.item.deleteMany({
+                where: { inventoryId: inventory.id },
+            });
+
+            await tx.comment.deleteMany({
+                where: { inventoryId: inventory.id },
+            });
+
+            await tx.inventoryField.deleteMany({
+                where: { inventoryId: inventory.id },
+            });
+
+            await tx.inventory.update({
+                where: { id: inventory.id },
+                data: {
+                    tags: { set: [] },
+                    authorizedUsers: { set: [] },
+                },
+            });
+
+            const result = await tx.inventory.deleteMany({
+                where: { id: inventory.id, version: inventory.version },
+            });
+
+            if (result.count === 0) {
+                throw new Error('INVENTORY_VERSION_CONFLICT');
+            }
+
+            return result;
         });
 
-        if (result.count === 0) {
+        if (deleteResult.count > 0) {
+            return sendResponse(res, null, 'Inventory deleted');
+        }
+    } catch (err) {
+        console.error('Delete inventory error:', err);
+
+        if (err.message === 'Access denied') {
+            return res.status(403).json({ message: err.message });
+        }
+
+        if (err.message === 'INVENTORY_VERSION_CONFLICT') {
             return res.status(409).json({ message: 'Inventory was modified or deleted by another process' });
         }
 
-        sendResponse(res, null, 'Inventory deleted');
-    } catch (err) {
-        console.error('Delete inventory error:', err);
-        res.status(err.message === 'Access denied' ? 403 : 500).json({ message: err.message });
+        res.status(500).json({ message: 'Failed to delete inventory', error: err.message });
     }
 };
 
