@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useSharedInventories } from '../../hooks/useSharedInventories';
 import { useMyInventories } from '../../hooks/useMyInventories';
 import { InventoryList } from '../../components/inventory/InventoryList';
@@ -5,9 +6,33 @@ import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useUserProfile } from '../../hooks/useUserProfile';
+import { useFilteredSorted } from '../../hooks/useFilteredSorted';
 
 const SectionTitle = ({ title }) => (
     <h2 className="text-2xl font-bold mb-4 mt-8">{title}</h2>
+);
+
+const Controls = ({ search, onSearchChange, sort, onSortChange }) => (
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+        <input
+            value={search}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Фильтр по названию/описанию"
+            className="w-full sm:w-1/2 px-3 py-2 border rounded-md text-sm dark:bg-gray-900"
+        />
+        <select
+            value={sort}
+            onChange={(e) => onSortChange(e.target.value)}
+            className="w-full sm:w-56 px-3 py-2 border rounded-md text-sm dark:bg-gray-900"
+        >
+            <option value="created_desc">Новые сначала</option>
+            <option value="created_asc">Старые сначала</option>
+            <option value="title_asc">Название A→Z</option>
+            <option value="title_desc">Название Z→A</option>
+            <option value="category_asc">Категория A→Z</option>
+            <option value="category_desc">Категория Z→A</option>
+        </select>
+    </div>
 );
 
 export function ProfilePage() {
@@ -20,6 +45,14 @@ export function ProfilePage() {
     const { inventories: myOwned, loading: l1 } = useMyInventories(!isMe);
     const { inventories: myShared, loading: l2 } = useSharedInventories(!isMe);
     const { user: otherUser, loading: l3, error } = useUserProfile(isMe ? null : id);
+
+    const [ownedSearch, setOwnedSearch] = useState('');
+    const [ownedSort, setOwnedSort] = useState('created_desc');
+    const [sharedSearch, setSharedSearch] = useState('');
+    const [sharedSort, setSharedSort] = useState('created_desc');
+
+    const ownedView = useFilteredSorted(myOwned, ownedSearch, ownedSort);
+    const sharedView = useFilteredSorted(myShared, sharedSearch, sharedSort);
 
     if (isMe) {
         if (l1 || l2) return <div className="p-8 text-center text-gray-500">{t('loading_details')}</div>;
@@ -39,10 +72,22 @@ export function ProfilePage() {
                     </div>
                 </div>
                 <SectionTitle title={t('owned_inventories')} />
-                <InventoryList items={myOwned} />
+                <Controls
+                    search={ownedSearch}
+                    onSearchChange={setOwnedSearch}
+                    sort={ownedSort}
+                    onSortChange={setOwnedSort}
+                />
+                <InventoryList items={ownedView} />
 
                 <SectionTitle title={t('shared_with_me')} />
-                <InventoryList items={myShared} />
+                <Controls
+                    search={sharedSearch}
+                    onSearchChange={setSharedSearch}
+                    sort={sharedSort}
+                    onSortChange={setSharedSort}
+                />
+                <InventoryList items={sharedView} />
             </div>
         );
     }
