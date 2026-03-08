@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 export function InventoryForm({ onSubmit, loading, initialData = {} }) {
     const [data, setData] = useState({ title: '', description: '', category: 'Equipment', tags: [], imageUrl: '', ...initialData });
-    const { fields, addField, updateField, removeField } = useFieldConfiguration(initialData.fields || []);
+    const { fields, addField, updateField, removeField, reorderFields } = useFieldConfiguration(initialData.fields || []);
     const { t } = useTranslation();
 
     const update = (f) => setData(p => ({ ...p, ...f }));
@@ -22,7 +22,13 @@ export function InventoryForm({ onSubmit, loading, initialData = {} }) {
             <BasicInfoStep data={data} update={update} />
             <CategoryImageStep data={data} update={update} />
             <TagInput tags={data.tags} onAdd={addTag} onRemove={removeTag} />
-            <FieldConfigurator fields={fields} addField={addField} updateField={updateField} removeField={removeField} reorderFields={setData && ((f) => update({ fields: f }))} />
+            <FieldConfigurator
+                fields={fields}
+                addField={addField}
+                updateField={updateField}
+                removeField={removeField}
+                reorderFields={reorderFields}
+            />
             <button disabled={loading} className="w-full py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-all">
                 {loading ? t('processing') : t('save_inventory')}
             </button>
