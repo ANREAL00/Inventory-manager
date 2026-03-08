@@ -84,9 +84,17 @@ exports.deleteInventory = async (req, res) => {
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        await prisma.inventory.delete({ where: { id: req.params.id } });
+        const result = await prisma.inventory.deleteMany({
+            where: { id: req.params.id, version: inventory.version },
+        });
+
+        if (result.count === 0) {
+            return res.status(409).json({ message: 'Inventory was modified or deleted by another process' });
+        }
+
         sendResponse(res, null, 'Inventory deleted');
     } catch (err) {
+        console.error('Delete inventory error:', err);
         res.status(err.message === 'Access denied' ? 403 : 500).json({ message: err.message });
     }
 };
@@ -105,11 +113,25 @@ exports.updateInventory = async (req, res) => {
         if (fields) updateData.fields = { deleteMany: {}, create: fields.map(({ id, inventoryId, ...f }, i) => ({ ...f, position: i })) };
         if (authorizedUsers) updateData.authorizedUsers = { set: authorizedUsers.map(u => ({ id: u.id })) };
 
-        const updated = await prisma.inventory.update({
+        const updateResult = await prisma.inventory.updateMany({
             where: { id: req.params.id, version },
             data: updateData,
-            include: { tags: true, fields: { orderBy: { position: 'asc' } }, authorizedUsers: true, owner: { select: { name: true } } },
         });
+
+        if (updateResult.count === 0) {
+            return res.status(409).json({ message: 'Conflict: Inventory was modified by another user' });
+        }
+
+        const updated = await prisma.inventory.findUnique({
+            where: { id: req.params.id },
+            include: {
+                tags: true,
+                fields: { orderBy: { position: 'asc' } },
+                authorizedUsers: true,
+                owner: { select: { name: true } },
+            },
+        });
+
         sendResponse(res, { inventory: updated }, 'Inventory updated');
     } catch (err) {
         console.error('Update inventory error:', err);

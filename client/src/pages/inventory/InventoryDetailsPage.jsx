@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useInventoryDetails } from '../../hooks/useInventoryDetails';
 import { useAuth } from '../../hooks/useAuth';
@@ -13,7 +13,7 @@ import { CategoryImageStep } from '../../components/inventory/wizard/CategoryIma
 import { DiscussionView } from '../../components/inventory/DiscussionView';
 import { AccessSettingsView } from '../../components/inventory/AccessSettingsView';
 import { StatisticsView } from '../../components/inventory/StatisticsView';
-import { Plus, Save } from 'lucide-react';
+import { Plus, Save, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import api from '../../api';
 
@@ -63,6 +63,7 @@ const ItemsView = ({ inventory, canEdit, onAdd, onItemClick, t }) => (
 
 export function InventoryDetailsPage() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { user } = useAuth();
     const { inventory, loading, refetch } = useInventoryDetails(id);
     const { t } = useTranslation();
@@ -98,6 +99,15 @@ export function InventoryDetailsPage() {
         finally { setIsSaving(false); }
     };
 
+    const deleteInventory = async () => {
+        try {
+            await api.delete(`/inventories/${id}`);
+            navigate('/');
+        } catch (e) {
+            alert(t('delete_failed'));
+        }
+    };
+
     useEffect(() => {
         const timer = isDirty && !isSaving && setTimeout(save, 8000);
         return () => clearTimeout(timer);
@@ -120,7 +130,7 @@ export function InventoryDetailsPage() {
         { id: 'access', label: t('tab_access') },
         { id: 'fields', label: t('tab_fields') },
         { id: 'custom-id', label: t('tab_custom_id') }
-    ].filter(t => ['items', 'discussion', 'stats'].includes(t.id) || canManageSet);
+    ].filter(t => ['items', 'discussion'].includes(t.id) || canManageSet);
 
     const update = (f) => { setLocalData(p => ({ ...p, ...f })); setIsDirty(true); };
 
@@ -132,7 +142,9 @@ export function InventoryDetailsPage() {
                     <div className="flex items-center gap-2 text-sm text-gray-400 shrink-0">
                         {isSaving ? t('status_saving') : (isDirty ? t('status_unsaved') : t('status_saved'))}
                         <button onClick={save} disabled={isSaving || !isDirty} className="p-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 transition-colors"><Save size={16} /></button>
+                        <button onClick={deleteInventory} disabled={!(isAdmin || isOwner)} className="p-2 bg-red-500 text-black rounded-md disabled:bg-red-300 transition-colors"><Trash2 size={16} /></button>
                     </div>
+
                 )}
             </div>
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
