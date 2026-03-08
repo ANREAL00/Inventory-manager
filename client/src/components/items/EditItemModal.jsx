@@ -8,8 +8,20 @@ export function EditItemModal({ isOpen, onClose, item, fields, customIdConfig, o
     const { t } = useTranslation();
 
     const handleUpdate = async (data) => {
-        try { await api.patch(`/items/${item.id}`, data); onUpdated(); onClose(); }
-        catch (e) { alert(e.response?.status === 409 ? t('err_conflict_item') : t('err_update_item')); }
+        try {
+            await api.patch(`/items/${item.id}`, data);
+            onUpdated();
+            onClose();
+        } catch (e) {
+            const res = e.response;
+            if (res?.status === 409 && res.data?.code === 'CUSTOM_ID_CONFLICT') {
+                alert(t('err_custom_id_unique'));
+            } else if (res?.status === 409) {
+                alert(t('err_conflict_item'));
+            } else {
+                alert(t('err_update_item'));
+            }
+        }
     };
 
     const handleDelete = async () => {

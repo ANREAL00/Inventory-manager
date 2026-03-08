@@ -108,6 +108,12 @@ exports.createItem = async (req, res) => {
         const item = await prisma.item.create({ data });
         sendResponse(res, { item }, 'Item created');
     } catch (err) {
+        if (err.code === 'P2002') {
+            return res.status(409).json({
+                code: 'CUSTOM_ID_CONFLICT',
+                message: 'Custom ID must be unique within this inventory',
+            });
+        }
         res.status(500).json({ message: err.message });
     }
 };
@@ -122,6 +128,12 @@ exports.updateItem = async (req, res) => {
         const updated = await performUpdate(req.params.id, req.body);
         sendResponse(res, { item: updated }, 'Item updated');
     } catch (err) {
+        if (err.code === 'P2002') {
+            return res.status(409).json({
+                code: 'CUSTOM_ID_CONFLICT',
+                message: 'Custom ID must be unique within this inventory',
+            });
+        }
         res.status(err.code === 'P2025' ? 409 : 500).json({ message: 'Conflict or update failed' });
     }
 };

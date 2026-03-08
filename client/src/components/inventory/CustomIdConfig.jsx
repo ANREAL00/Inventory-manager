@@ -21,6 +21,7 @@ const Part = ({ part, onRemove, onUpdate, index, draggedIdx, setDraggedIdx, hand
             onDragStart={() => setDraggedIdx(index)}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => { e.preventDefault(); handleDrop(index); }}
+            onDragEnd={() => setDraggedIdx(null)}
             className={`flex items-center gap-3 p-3 border rounded-lg bg-white dark:bg-gray-950 shadow-sm transition-all group ${draggedIdx === index ? 'opacity-50' : ''}`}
         >
             <div className="cursor-move p-1 text-gray-400 hover:text-gray-600"><GripVertical size={16} /></div>
@@ -111,9 +112,35 @@ export function CustomIdConfig({ config = [], inventoryId, onChange }) {
 
             <div className="space-y-2">
                 {config.map((p, i) => (
-                    <Part key={i} part={p} index={i} onRemove={remove} onUpdate={update} draggedIdx={draggedIdx} setDraggedIdx={setDraggedIdx} handleDrop={handleDrop} t={t} />
+                    <Part
+                        key={i}
+                        part={p}
+                        index={i}
+                        onRemove={remove}
+                        onUpdate={update}
+                        draggedIdx={draggedIdx}
+                        setDraggedIdx={setDraggedIdx}
+                        handleDrop={handleDrop}
+                        t={t}
+                    />
                 ))}
             </div>
+
+            {config.length > 0 && (
+                <div
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                        e.preventDefault();
+                        if (draggedIdx !== null) {
+                            remove(draggedIdx);
+                            setDraggedIdx(null);
+                        }
+                    }}
+                    className="mt-4 p-3 border-2 border-dashed rounded-lg text-xs text-center text-gray-500 dark:text-gray-400 bg-gray-50/60 dark:bg-gray-900/40"
+                >
+                    {t('hint_custom_id') || 'Drag parts to reorder. Drag here to remove a part.'}
+                </div>
+            )}
         </div>
     );
 }

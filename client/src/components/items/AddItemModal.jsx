@@ -12,7 +12,12 @@ export function AddItemModal({ isOpen, onClose, inventoryId, fields, customIdCon
             onCreated();
             onClose();
         } catch (err) {
-            alert(err.response?.data?.message || t('err_create_item'));
+            const res = err.response;
+            if (res?.status === 409 && res.data?.code === 'CUSTOM_ID_CONFLICT') {
+                alert(t('err_custom_id_unique'));
+            } else {
+                alert(res?.data?.message || t('err_create_item'));
+            }
         }
     };
 
