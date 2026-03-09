@@ -73,6 +73,7 @@ export function InventoryDetailsPage() {
     const [isSaving, setIsSaving] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     useEffect(() => {
         if (inventory && !localData) setLocalData(inventory);
@@ -99,13 +100,22 @@ export function InventoryDetailsPage() {
         finally { setIsSaving(false); }
     };
 
-    const deleteInventory = async () => {
+    const handleDeleteClick = () => {
+        setShowDeleteConfirm(true);
+    };
+
+    const confirmDelete = async () => {
+        setShowDeleteConfirm(false);
         try {
             await api.delete(`/inventories/${id}`);
             navigate('/');
         } catch (e) {
             alert(t('delete_failed'));
         }
+    };
+
+    const cancelDelete = () => {
+        setShowDeleteConfirm(false);
     };
 
     useEffect(() => {
@@ -141,8 +151,20 @@ export function InventoryDetailsPage() {
                 {canManageSet && (
                     <div className="flex items-center gap-2 text-sm text-gray-400 shrink-0">
                         {isSaving ? t('status_saving') : (isDirty ? t('status_unsaved') : t('status_saved'))}
-                        <button onClick={save} disabled={isSaving || !isDirty} className="p-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 transition-colors"><Save size={16} /></button>
-                        <button onClick={deleteInventory} disabled={!(isAdmin || isOwner)} className="p-2 bg-red-500 text-black rounded-md disabled:bg-red-300 transition-colors"><Trash2 size={16} /></button>
+                        <button
+                            onClick={save}
+                            disabled={isSaving || !isDirty}
+                            className="p-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 transition-colors"
+                        >
+                            <Save size={16} />
+                        </button>
+                        <button
+                            onClick={handleDeleteClick}
+                            disabled={!(isAdmin || isOwner)}
+                            className="p-2 rounded-full border border-red-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 disabled:opacity-50 transition-colors"
+                        >
+                            <Trash2 size={18} />
+                        </button>
                     </div>
 
                 )}
@@ -177,6 +199,31 @@ export function InventoryDetailsPage() {
             )}
             <AddItemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} inventoryId={id} fields={localData.fields} customIdConfig={localData.customIdConfig} onCreated={handleRefetch} />
             <EditItemModal isOpen={!!selectedItem} onClose={() => setSelectedItem(null)} item={selectedItem} fields={localData.fields} customIdConfig={localData.customIdConfig} onUpdated={handleRefetch} canEdit={canWriteItems} />
+
+            {showDeleteConfirm && (
+                <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40">
+                    <div className="bg-white dark:bg-gray-950 rounded-xl shadow-lg p-6 max-w-sm w-full mx-4">
+                        <h2 className="text-lg font-bold mb-2">{t('delete_inventory_title') || 'Delete inventory?'}</h2>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                            {t('delete_inventory_confirm') || 'Are you sure you want to delete this inventory? This action cannot be undone.'}
+                        </p>
+                        <div className="flex justify-end gap-2">
+                            <button
+                                onClick={cancelDelete}
+                                className="px-3 py-1.5 rounded-md border border-gray-300 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+                            >
+                                {t('no')}
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                className="px-3 py-1.5 rounded-md bg-red-500 text-white text-sm hover:bg-red-600"
+                            >
+                                {t('yes')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
