@@ -118,6 +118,14 @@ exports.deleteInventory = async (req, res) => {
                 throw new Error('INVENTORY_VERSION_CONFLICT');
             }
 
+            await tx.tag.deleteMany({
+                where: {
+                    inventories: {
+                        none: {},
+                    },
+                },
+            });
+
             return result;
         });
 
@@ -216,7 +224,13 @@ exports.getPopularInventories = async (req, res) => {
 
 exports.getAllTags = async (req, res) => {
     try {
-        const tags = await prisma.tag.findMany();
+        const tags = await prisma.tag.findMany({
+            where: {
+                inventories: {
+                    some: {},
+                },
+            },
+        });
         sendResponse(res, { tags });
     } catch (err) {
         console.error('Fetch tags error:', err);
