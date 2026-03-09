@@ -25,7 +25,7 @@ const Part = ({ part, onRemove, onUpdate, index, draggedIdx, setDraggedIdx, hand
             className={`flex items-center gap-3 p-3 border rounded-lg bg-white dark:bg-gray-950 shadow-sm transition-all group ${draggedIdx === index ? 'opacity-50' : ''}`}
         >
             <div className="cursor-move p-1 text-gray-400 hover:text-gray-600"><GripVertical size={16} /></div>
-            <div className="flex-1 flex justify-between items-center">
+            <div className="flex-1 flex justify-between items-center gap-3">
                 <span className="text-sm font-semibold">{labelMap[part.type]}</span>
                 {part.type === 'fixed' && (
                     <input
@@ -34,6 +34,24 @@ const Part = ({ part, onRemove, onUpdate, index, draggedIdx, setDraggedIdx, hand
                         className="ml-2 text-sm bg-transparent border-b border-dashed focus:outline-none"
                         onClick={(e) => e.stopPropagation()}
                     />
+                )}
+                {part.type === 'sequence' && (
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <span>{t('sequence_length') || 'Digits'}:</span>
+                        <input
+                            type="number"
+                            min={1}
+                            max={12}
+                            value={part.padLength ?? 1}
+                            onChange={(e) => {
+                                const raw = Number(e.target.value);
+                                const safe = Number.isFinite(raw) ? Math.min(12, Math.max(1, raw)) : 1;
+                                onUpdate(index, { padLength: safe });
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-14 px-1 py-0.5 border-b border-dashed bg-transparent text-right focus:outline-none"
+                        />
+                    </div>
                 )}
             </div>
             <button onClick={() => onRemove(index)} className="opacity-0 group-hover:opacity-100 p-1 text-red-500 hover:bg-red-50 rounded">

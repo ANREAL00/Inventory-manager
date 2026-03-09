@@ -41,7 +41,7 @@ const resources = {
       "label_toggle_visibility": "Toggle Visibility in Table", "placeholder_field_title": "Field Title", "placeholder_tooltip": "Tooltip Description",
       "status_searching": "Searching...", "results_for": "Results for \"{{query}}\"", "no_items": "No items found.", "no_preview": "No preview available",
       "label_sort_by": "Sort by", "sort_name": "Name", "sort_email": "Email", "btn_help": "Help",
-      "help_id_title": "Custom ID Format Guide", "help_fixed_desc": "Fixed Unicode text.", "help_random_desc": "Random digits/letters.", "help_guid_desc": "Standard unique ID.", "help_date_desc": "Current timestamp.", "help_sequence_desc": "Auto-incrementing number.",
+      "help_id_title": "Custom ID Format Guide", "help_fixed_desc": "Fixed Unicode text.", "help_random_desc": "Random digits/letters.", "help_guid_desc": "Standard unique ID.", "help_date_desc": "Current timestamp.", "help_sequence_desc": "Auto-incrementing number.", "sequence_length": "Digits",
       "placeholder_id_format": "Format: {{format}}",
       "click_to_upload": "Click to upload", "err_upload_failed": "Upload failed", "select_category": "Select Category"
     }
@@ -85,7 +85,7 @@ const resources = {
       "label_toggle_visibility": "Видимость в таблице", "placeholder_field_title": "Название поля", "placeholder_tooltip": "Описание (подсказка)",
       "status_searching": "Поиск...", "results_for": "Результаты для \"{{query}}\"", "no_items": "Предметы не найдены.", "no_preview": "Нет описания",
       "label_sort_by": "Сортировать по", "sort_name": "Имени", "sort_email": "Email", "btn_help": "Справка",
-      "help_id_title": "Справка по формату ID", "help_fixed_desc": "Фиксированный текст (Unicode).", "help_random_desc": "Случайные числа/буквы.", "help_guid_desc": "Стандартный уникальный ID.", "help_date_desc": "Текущая дата/время.", "help_sequence_desc": "Автоинкремент (счетчик).",
+      "help_id_title": "Справка по формату ID", "help_fixed_desc": "Фиксированный текст (Unicode).", "help_random_desc": "Случайные числа/буквы.", "help_guid_desc": "Стандартный уникальный ID.", "help_date_desc": "Текущая дата/время.", "help_sequence_desc": "Автоинкремент (счетчик).", "sequence_length": "Цифр",
       "placeholder_id_format": "Формат: {{format}}",
       "click_to_upload": "Нажмите для загрузки", "err_upload_failed": "Ошибка загрузки", "select_category": "Выберите категорию"
     }
