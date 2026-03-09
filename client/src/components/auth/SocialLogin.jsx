@@ -1,4 +1,4 @@
-import { Github, Facebook } from 'lucide-react';
+import { Github, Chrome } from 'lucide-react';
 
 const SocialBtn = ({ provider, icon: Icon, color }) => (
     <a
@@ -12,8 +12,8 @@ const SocialBtn = ({ provider, icon: Icon, color }) => (
 export function SocialLogin() {
     return (
         <div className="space-y-2 pt-4 border-t">
-            <SocialBtn provider="Google" icon={Github} color="text-gray-700 dark:text-gray-300" />
-            <SocialBtn provider="Facebook" icon={Facebook} color="text-blue-600" />
+            <SocialBtn provider="Google" icon={Chrome} color="text-blue-700 dark:text-blue-300" />
+            <SocialBtn provider="Github" icon={Github} color="text-gray-700 dark:text-gray-300" />
         </div>
     );
 }

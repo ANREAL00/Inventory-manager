@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const FacebookStrategy = require('passport-facebook').Strategy;
+const GitHubStrategy = require('passport-github2').Strategy;
 const bcrypt = require('bcryptjs');
 const { PrismaClient } = require('@prisma/client');
 
@@ -58,13 +58,13 @@ passport.use(
   })
 );
 
-const socialHandler = async (profile, done, type) => {
+const socialHandler = async (profile, done, { fieldKey, domain }) => {
   try {
-    const email = profile.emails?.[0].value || `${profile.id}@${type}.com`;
+    const email = profile.emails?.[0]?.value || `${profile.id}@${domain}.com`;
     const user = await prisma.user.upsert({
       where: { email },
-      update: { [`${type}Id`]: profile.id },
-      create: { email, name: profile.displayName, [`${type}Id`]: profile.id }
+      update: { [fieldKey]: profile.id },
+      create: { email, name: profile.displayName, [fieldKey]: profile.id }
     });
     return done(null, user);
   } catch (err) { return done(err); }
@@ -76,13 +76,13 @@ passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID || 'id',
   clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'secret',
   callbackURL: `${apiBase}/api/auth/google/callback`
-}, (at, rt, p, d) => socialHandler(p, d, 'google')));
+}, (at, rt, p, d) => socialHandler(p, d, { fieldKey: 'googleId', domain: 'google' })));
 
-passport.use(new FacebookStrategy({
-  clientID: process.env.FACEBOOK_APP_ID || 'id',
-  clientSecret: process.env.FACEBOOK_APP_SECRET || 'secret',
-  callbackURL: `${apiBase}/api/auth/facebook/callback`,
-  profileFields: ['id', 'displayName', 'emails']
-}, (at, rt, p, d) => socialHandler(p, d, 'facebook')));
+passport.use(new GitHubStrategy({
+  clientID: process.env.GITHUB_CLIENT_ID || 'id',
+  clientSecret: process.env.GITHUB_CLIENT_SECRET || 'secret',
+  callbackURL: `${apiBase}/api/auth/github/callback`,
+  scope: ['user:email']
+}, (at, rt, p, d) => socialHandler(p, d, { fieldKey: 'facebookId', domain: 'github' })));
 
 module.exports = passport;
