@@ -29,7 +29,12 @@ export function useAdminUsers() {
 
     const handleAction = async (action, method = 'patch', body = null) => {
         try {
-            await Promise.all(selectedIds.map(id => api[method](`/users/${id}/${action}`, body)));
+            await Promise.all(
+                selectedIds.map(id => {
+                    const url = method === 'delete' ? `/users/${id}` : `/users/${id}/${action}`;
+                    return api[method](url, body);
+                })
+            );
             await fetchUsers();
             setSelectedIds([]);
         } catch (err) {
