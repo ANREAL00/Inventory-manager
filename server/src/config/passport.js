@@ -51,7 +51,13 @@ passport.use(
   new JwtStrategy(options, async (jwt_payload, done) => {
     try {
       const user = await prisma.user.findUnique({ where: { id: jwt_payload.id } });
-      return user ? done(null, user) : done(null, false, { message: 'User not found.' });
+      if (!user) {
+        return done(null, false, { message: 'User not found.' });
+      }
+      if (user.status === 'BLOCKED') {
+        return done(null, false, { message: 'User is blocked.' });
+      }
+      return done(null, user);
     } catch (err) {
       return done(err);
     }
@@ -66,6 +72,9 @@ const socialHandler = async (profile, done, { fieldKey, domain }) => {
       update: { [fieldKey]: profile.id },
       create: { email, name: profile.displayName, [fieldKey]: profile.id }
     });
+    if (user.status === 'BLOCKED') {
+      return done(null, false, { message: 'User is blocked.' });
+    }
     return done(null, user);
   } catch (err) { return done(err); }
 };
