@@ -154,7 +154,7 @@ export function InventoryDetailsPage() {
                         <button
                             onClick={save}
                             disabled={isSaving || !isDirty}
-                            className="p-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300 transition-colors"
+                            className="p-2 bg-blue-600 text-white rounded-md disabled:bg-gray-500 transition-colors"
                         >
                             <Save size={16} />
                         </button>
