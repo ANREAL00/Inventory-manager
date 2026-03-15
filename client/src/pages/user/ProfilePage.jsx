@@ -12,12 +12,12 @@ const SectionTitle = ({ title }) => (
     <h2 className="text-2xl font-bold mb-4 mt-8">{title}</h2>
 );
 
-const Controls = ({ search, onSearchChange, sort, onSortChange }) => (
+const Controls = ({ search, onSearchChange, sort, onSortChange, t }) => (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
         <input
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Фильтр по названию/описанию"
+            placeholder={t('profile_filter_placeholder')}
             className="w-full sm:w-1/2 px-3 py-2 border rounded-md text-sm dark:bg-gray-900"
         />
         <select
@@ -25,12 +25,12 @@ const Controls = ({ search, onSearchChange, sort, onSortChange }) => (
             onChange={(e) => onSortChange(e.target.value)}
             className="w-full sm:w-56 px-3 py-2 border rounded-md text-sm dark:bg-gray-900"
         >
-            <option value="created_desc">Новые сначала</option>
-            <option value="created_asc">Старые сначала</option>
-            <option value="title_asc">Название A→Z</option>
-            <option value="title_desc">Название Z→A</option>
-            <option value="category_asc">Категория A→Z</option>
-            <option value="category_desc">Категория Z→A</option>
+            <option value="created_desc">{t('sort_created_desc')}</option>
+            <option value="created_asc">{t('sort_created_asc')}</option>
+            <option value="title_asc">{t('sort_title_asc')}</option>
+            <option value="title_desc">{t('sort_title_desc')}</option>
+            <option value="category_asc">{t('sort_category_asc')}</option>
+            <option value="category_desc">{t('sort_category_desc')}</option>
         </select>
     </div>
 );
@@ -80,6 +80,7 @@ export function ProfilePage() {
                     onSearchChange={setOwnedSearch}
                     sort={ownedSort}
                     onSortChange={setOwnedSort}
+                    t={t}
                 />
                 <InventoryList items={ownedView} />
 
@@ -89,6 +90,7 @@ export function ProfilePage() {
                     onSearchChange={setSharedSearch}
                     sort={sharedSort}
                     onSortChange={setSharedSort}
+                    t={t}
                 />
                 <InventoryList items={sharedView} />
             </div>
@@ -112,6 +114,7 @@ export function ProfilePage() {
                 onSearchChange={setOtherSearch}
                 sort={otherSort}
                 onSortChange={setOtherSort}
+                t={t}
             />
             <InventoryList items={otherView} />
         </div>

@@ -43,7 +43,11 @@ const resources = {
       "label_sort_by": "Sort by", "sort_name": "Name", "sort_email": "Email", "btn_help": "Help",
       "help_id_title": "Custom ID Format Guide", "help_fixed_desc": "Fixed Unicode text.", "help_random_desc": "Random digits/letters.", "help_guid_desc": "Standard unique ID.", "help_date_desc": "Current timestamp.", "help_sequence_desc": "Auto-incrementing number.", "sequence_length": "Digits",
       "placeholder_id_format": "Format: {{format}}",
-      "click_to_upload": "Click to upload", "err_upload_failed": "Upload failed", "select_category": "Select Category"
+      "click_to_upload": "Click to upload", "err_upload_failed": "Upload failed", "select_category": "Select Category",
+      "profile_filter_placeholder": "Filter by title or description",
+      "sort_created_desc": "Newest first", "sort_created_asc": "Oldest first",
+      "sort_title_asc": "Title A→Z", "sort_title_desc": "Title Z→A",
+      "sort_category_asc": "Category A→Z", "sort_category_desc": "Category Z→A"
     }
   },
   ru: {
@@ -87,7 +91,11 @@ const resources = {
       "label_sort_by": "Сортировать по", "sort_name": "Имени", "sort_email": "Email", "btn_help": "Справка",
       "help_id_title": "Справка по формату ID", "help_fixed_desc": "Фиксированный текст (Unicode).", "help_random_desc": "Случайные числа/буквы.", "help_guid_desc": "Стандартный уникальный ID.", "help_date_desc": "Текущая дата/время.", "help_sequence_desc": "Автоинкремент (счетчик).", "sequence_length": "Цифр",
       "placeholder_id_format": "Формат: {{format}}",
-      "click_to_upload": "Нажмите для загрузки", "err_upload_failed": "Ошибка загрузки", "select_category": "Выберите категорию"
+      "click_to_upload": "Нажмите для загрузки", "err_upload_failed": "Ошибка загрузки", "select_category": "Выберите категорию",
+      "profile_filter_placeholder": "Фильтр по названию или описанию",
+      "sort_created_desc": "Новые сначала", "sort_created_asc": "Старые сначала",
+      "sort_title_asc": "Название A→Z", "sort_title_desc": "Название Z→A",
+      "sort_category_asc": "Категория A→Z", "sort_category_desc": "Категория Z→A"
     }
   }
 };
