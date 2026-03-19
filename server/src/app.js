@@ -14,6 +14,7 @@ const inventoryRoutes = require('./routes/inventoryRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const searchRoutes = require('./routes/searchRoutes');
+const salesforceRoutes = require('./routes/salesforceRoutes');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/api/inventories', inventoryRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/salesforce', salesforceRoutes);
 
 app.get('/', (req, res) => {
     res.send('Inventory Manager API is running');

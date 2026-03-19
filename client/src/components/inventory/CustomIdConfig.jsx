@@ -61,8 +61,6 @@ const Part = ({ part, onRemove, onUpdate, index, draggedIdx, setDraggedIdx, hand
     );
 };
 
-const TYPES = ['fixed', 'random20bit', 'random32bit', 'random6digit', 'random9digit', 'guid', 'date', 'sequence'];
-
 export function CustomIdConfig({ config = [], inventoryId, onChange }) {
     const [draggedIdx, setDraggedIdx] = useState(null);
     const [showHelp, setShowHelp] = useState(false);
@@ -156,7 +154,7 @@ export function CustomIdConfig({ config = [], inventoryId, onChange }) {
                     }}
                     className="mt-4 p-3 border-2 border-dashed rounded-lg text-xs text-center text-gray-500 dark:text-gray-400 bg-gray-50/60 dark:bg-gray-900/40"
                 >
-                    {t('hint_custom_id') || 'Drag parts to reorder. Drag here to remove a part.'}
+                    {t('hint_custom_id')}
                 </div>
             )}
         </div>

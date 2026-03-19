@@ -19,14 +19,6 @@ export function useAdminUsers() {
 
     useEffect(() => { fetchUsers(); }, []);
 
-    const updateUserInState = (updatedUser) => {
-        setUsers(prev => prev.map(u => u.id === updatedUser.id ? updatedUser : u));
-    };
-
-    const removeUserFromState = (id) => {
-        setUsers(prev => prev.filter(u => u.id !== id));
-    };
-
     const handleAction = async (action, method = 'patch', body = null) => {
         try {
             await Promise.all(

@@ -47,7 +47,22 @@ const resources = {
       "profile_filter_placeholder": "Filter by title or description",
       "sort_created_desc": "Newest first", "sort_created_asc": "Oldest first",
       "sort_title_asc": "Title A→Z", "sort_title_desc": "Title Z→A",
-      "sort_category_asc": "Category A→Z", "sort_category_desc": "Category Z→A"
+      "sort_category_asc": "Category A→Z", "sort_category_desc": "Category Z→A",
+      "sf_btn_open": "Create in Salesforce",
+      "sf_modal_title": "Salesforce: Account + Contact",
+      "sf_label_company": "Company",
+      "sf_placeholder_company": "e.g. Acme Ltd",
+      "sf_label_phone": "Phone",
+      "sf_placeholder_phone": "+1 555 123-45-67",
+      "sf_label_description": "Description",
+      "sf_placeholder_description": "Additional details for Salesforce",
+      "sf_err_company_required": "Please enter a company name",
+      "sf_err_generic": "Failed to create records in Salesforce",
+      "sf_success_title": "Done",
+      "sf_account_id": "Account ID",
+      "sf_contact_id": "Contact ID",
+      "sf_btn_submit": "Send to Salesforce",
+      "sf_btn_loading": "Creating in Salesforce..."
     }
   },
   ru: {
@@ -95,7 +110,22 @@ const resources = {
       "profile_filter_placeholder": "Фильтр по названию или описанию",
       "sort_created_desc": "Новые сначала", "sort_created_asc": "Старые сначала",
       "sort_title_asc": "Название A→Z", "sort_title_desc": "Название Z→A",
-      "sort_category_asc": "Категория A→Z", "sort_category_desc": "Категория Z→A"
+      "sort_category_asc": "Категория A→Z", "sort_category_desc": "Категория Z→A",
+      "sf_btn_open": "Создать в Salesforce",
+      "sf_modal_title": "Salesforce: компания и контакт",
+      "sf_label_company": "Компания",
+      "sf_placeholder_company": "Напр. Acme Ltd",
+      "sf_label_phone": "Телефон",
+      "sf_placeholder_phone": "+375 29 123-45-67",
+      "sf_label_description": "Описание",
+      "sf_placeholder_description": "Дополнительная информация для Salesforce",
+      "sf_err_company_required": "Введите компанию",
+      "sf_err_generic": "Ошибка при создании в Salesforce",
+      "sf_success_title": "Готово",
+      "sf_account_id": "ID компании (Account)",
+      "sf_contact_id": "ID контакта (Contact)",
+      "sf_btn_submit": "Отправить в Salesforce",
+      "sf_btn_loading": "Создаём в Salesforce..."
     }
   }
 };
