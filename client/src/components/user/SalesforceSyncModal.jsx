@@ -25,8 +25,11 @@ export function SalesforceSyncModal({ isOpen, onClose, targetUserId }) {
     const mapBackendErrorToText = (err) => {
         const code = err?.response?.data?.errorCode;
         if (code === 'SF_DUPLICATE_CONTACT') return t('sf_err_duplicate_contact');
-        if (code === 'SF_GENERIC') return t('sf_err_generic');
-        return err?.response?.data?.message || t('sf_err_generic');
+        const backendMessage = err?.response?.data?.message;
+        if (code === 'SF_GENERIC') {
+            return backendMessage ? `${t('sf_err_generic')}: ${backendMessage}` : t('sf_err_generic');
+        }
+        return backendMessage || t('sf_err_generic');
     };
 
     const handleSubmit = async (e) => {

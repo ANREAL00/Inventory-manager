@@ -1,208 +1,113 @@
-const SALESFORCE_API_ENV_VARS = [
-    'SALESFORCE_CLIENT_ID',
-    'SALESFORCE_CLIENT_SECRET',
-    'SALESFORCE_USERNAME',
-    'SALESFORCE_PASSWORD',
-    'SALESFORCE_SECURITY_TOKEN',
-    'SALESFORCE_LOGIN_URL'
-];
+const { getSession, requestJson } = require('./salesforce/client');
 
-function mustEnv(name) {
-    const value = process.env[name];
-    if (!value) throw new Error(`Missing env var: ${name}`);
-    return value;
-}
+const SALESFORCE_OBJECTS = {
+    account: 'Account',
+    contact: 'Contact',
+};
 
-async function salesforceFetchJson(url, { method = 'GET', accessToken, body } = {}) {
-    const headers = {
-        Accept: 'application/json',
-    };
-    if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
-    if (body !== undefined) headers['Content-Type'] = 'application/json';
-
-    const res = await fetch(url, {
-        method,
-        headers,
-        body: body !== undefined ? JSON.stringify(body) : undefined,
-    });
-
-    const text = await res.text();
-    let parsed = null;
-    try {
-        parsed = text ? JSON.parse(text) : null;
-    } catch {
-        parsed = null;
-    }
-
-    if (!res.ok) {
-        const errMsg = parsed?.message || parsed?.error || text || `HTTP ${res.status}`;
-        const err = new Error(`Salesforce request failed: ${errMsg}`);
-        err.status = res.status;
-        err.body = parsed;
-        throw err;
-    }
-
-    return parsed;
-}
-
-async function salesforceGetAccessToken() {
-    for (const name of SALESFORCE_API_ENV_VARS) mustEnv(name);
-
-    const clientId = process.env.SALESFORCE_CLIENT_ID;
-    const clientSecret = process.env.SALESFORCE_CLIENT_SECRET;
-    const username = process.env.SALESFORCE_USERNAME;
-    const password = `${process.env.SALESFORCE_PASSWORD}${process.env.SALESFORCE_SECURITY_TOKEN}`;
-    const loginUrl = process.env.SALESFORCE_LOGIN_URL;
-
-    const form = new URLSearchParams({
-        grant_type: 'password',
-        client_id: clientId,
-        client_secret: clientSecret,
-        username,
-        password,
-    });
-
-    const res = await fetch(`${loginUrl}/services/oauth2/token`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: form.toString(),
-    });
-
-    const text = await res.text();
-    let parsed = null;
-    try {
-        parsed = text ? JSON.parse(text) : null;
-    } catch {
-        parsed = null;
-    }
-
-    if (!res.ok) {
-        const errMsg = parsed?.error_description || parsed?.error || text || `HTTP ${res.status}`;
-        throw new Error(`Salesforce token failed: ${errMsg}`);
-    }
-
-    const accessToken = parsed.access_token;
-    const instanceUrl = parsed.instance_url;
-    if (!accessToken || !instanceUrl) {
-        throw new Error('Salesforce token response missing access_token or instance_url');
-    }
-
-    return { accessToken, instanceUrl };
-}
-
-function parseVersionSegment(versionOrUrl) {
-    const s = String(versionOrUrl || '').trim();
-    const withV = s.match(/^v(\d+)\.(\d+)$/i);
-    if (withV) return { major: Number(withV[1]), minor: Number(withV[2]), pathSegment: `v${withV[1]}.${withV[2]}` };
-    const noV = s.match(/^(\d+)\.(\d+)$/);
-    if (noV) return { major: Number(noV[1]), minor: Number(noV[2]), pathSegment: `v${noV[1]}.${noV[2]}` };
-    return null;
-}
-
-function apiPathSegmentFromVersionItem(item) {
-    if (!item) return null;
-    if (item.url && typeof item.url === 'string') {
-        const m = item.url.match(/\/(v\d+\.\d+)\/?$/i);
-        if (m) return m[1];
-    }
-    const parsed = parseVersionSegment(item.version);
-    return parsed?.pathSegment || null;
-}
-
-function pickLatestApiPathSegment(versions) {
-    if (!Array.isArray(versions) || versions.length === 0) return null;
-
-    let bestItem = versions[0];
-    let bestKey = -1;
-
-    for (const item of versions) {
-        const seg = apiPathSegmentFromVersionItem(item);
-        const parsed = parseVersionSegment(seg || item.version);
-        const key = parsed ? parsed.major * 100 + parsed.minor : -1;
-        if (key > bestKey) {
-            bestKey = key;
-            bestItem = item;
-        }
-    }
-
-    return apiPathSegmentFromVersionItem(bestItem);
-}
-
-async function salesforceGetApiVersion({ accessToken, instanceUrl }) {
-    if (process.env.SALESFORCE_API_VERSION) return process.env.SALESFORCE_API_VERSION;
-
-    const data = await salesforceFetchJson(`${instanceUrl}/services/data`, { accessToken });
-    const versions = Array.isArray(data) ? data : data?.versions;
-    const latest = pickLatestApiPathSegment(versions);
-    if (!latest) throw new Error('Could not determine latest Salesforce API version');
-    return latest;
-}
-
-async function salesforceCreateAccountAndContact({ user, company, phone, description }) {
-    if (!company) throw new Error('company is required');
+function assertSalesforceUser(user) {
     if (!user?.email) throw new Error('user.email is required');
     if (!user?.name) throw new Error('user.name is required');
+}
 
-    const { accessToken, instanceUrl } = await salesforceGetAccessToken();
-    const apiVersion = await salesforceGetApiVersion({ accessToken, instanceUrl });
-    const base = `${instanceUrl}/services/data/${apiVersion}`;
-
-    const accountPayload = {
-        Name: company,
-    };
-    if (description) accountPayload.Description = description;
-
-    let account;
-    let accountDescriptionSaved = false;
-    try {
-        account = await salesforceFetchJson(`${base}/sobjects/Account`, {
-            method: 'POST',
-            accessToken,
-            body: accountPayload,
-        });
-        accountDescriptionSaved = Boolean(description);
-    } catch (err) {
-        if (description) {
-            const payloadWithoutDescription = { Name: company };
-            account = await salesforceFetchJson(`${base}/sobjects/Account`, {
-                method: 'POST',
-                accessToken,
-                body: payloadWithoutDescription,
-            });
-        } else {
-            throw err;
-        }
+function splitName(name) {
+    const parts = String(name).trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) {
+        return { firstName: undefined, lastName: 'Unknown' };
     }
+    if (parts.length === 1) {
+        return { firstName: undefined, lastName: parts[0] };
+    }
+    return {
+        firstName: parts[0],
+        lastName: parts.slice(1).join(' '),
+    };
+}
 
-    const accountId = account?.id;
-    if (!accountId) throw new Error('Salesforce Account creation failed (no id returned)');
+async function createSObject(baseUrl, objectName, accessToken, payload) {
+    return requestJson(`${baseUrl}/sobjects/${objectName}`, {
+        method: 'POST',
+        accessToken,
+        body: payload,
+    });
+}
 
-    const parts = String(user.name).trim().split(/\s+/).filter(Boolean);
-    const firstName = parts.length ? parts[0] : 'User';
-    const lastName = parts.length > 1 ? parts.slice(1).join(' ') : parts[0] || 'Unknown';
+async function updateSObject(baseUrl, objectName, recordId, accessToken, payload) {
+    await requestJson(`${baseUrl}/sobjects/${objectName}/${recordId}`, {
+        method: 'PATCH',
+        accessToken,
+        body: payload,
+    });
+}
 
-    const contactPayload = {
-        FirstName: firstName,
+function getDuplicateContactId(errorBody) {
+    if (!Array.isArray(errorBody)) return null;
+    const duplicate = errorBody.find((e) => e?.errorCode === 'DUPLICATES_DETECTED');
+    return duplicate?.duplicateResult?.matchResults?.[0]?.matchRecords?.[0]?.record?.Id || null;
+}
+
+async function createAccount(baseUrl, accessToken, company, description) {
+    const payload = { Name: company };
+    if (description) payload.Description = description;
+
+    try {
+        const account = await createSObject(baseUrl, SALESFORCE_OBJECTS.account, accessToken, payload);
+        return { account, accountDescriptionSaved: Boolean(description) };
+    } catch (err) {
+        if (!description) throw err;
+        const account = await createSObject(baseUrl, SALESFORCE_OBJECTS.account, accessToken, { Name: company });
+        return { account, accountDescriptionSaved: false };
+    }
+}
+
+async function createContact(baseUrl, accessToken, user, accountId, phone, description) {
+    const { firstName, lastName } = splitName(user.name);
+    const payload = {
         LastName: lastName,
         Email: user.email,
         AccountId: accountId,
     };
-    if (phone) contactPayload.Phone = phone;
-    if (description && !accountDescriptionSaved) contactPayload.Description = description;
+    if (firstName) payload.FirstName = firstName;
+    if (phone) payload.Phone = phone;
+    if (description) payload.Description = description;
 
-    const contact = await salesforceFetchJson(`${base}/sobjects/Contact`, {
-        method: 'POST',
+    try {
+        const created = await createSObject(baseUrl, SALESFORCE_OBJECTS.contact, accessToken, payload);
+        return { contact: created, reusedExisting: false };
+    } catch (err) {
+        const existingContactId = getDuplicateContactId(err?.body);
+        if (!existingContactId) throw err;
+
+        const updatePayload = { AccountId: accountId };
+        if (phone) updatePayload.Phone = phone;
+        if (description) updatePayload.Description = description;
+        await updateSObject(baseUrl, SALESFORCE_OBJECTS.contact, existingContactId, accessToken, updatePayload);
+
+        return { contact: { id: existingContactId }, reusedExisting: true };
+    }
+}
+
+module.exports.salesforceCreateAccountAndContact = async function salesforceCreateAccountAndContact({ user, company, phone, description }) {
+    if (!company) throw new Error('company is required');
+    assertSalesforceUser(user);
+
+    const { accessToken, apiBase, apiVersion } = await getSession();
+    const { account, accountDescriptionSaved } = await createAccount(apiBase, accessToken, company, description);
+
+    const accountId = account?.id;
+    if (!accountId) throw new Error('Salesforce Account creation failed (no id returned)');
+
+    const { contact, reusedExisting } = await createContact(
+        apiBase,
         accessToken,
-        body: contactPayload,
-    });
+        user,
+        accountId,
+        phone,
+        description
+    );
 
     const contactId = contact?.id;
     if (!contactId) throw new Error('Salesforce Contact creation failed (no id returned)');
 
-    return { accountId, contactId, apiVersion, accountDescriptionSaved };
+    return { accountId, contactId, apiVersion, accountDescriptionSaved, reusedExistingContact: reusedExisting };
 }
-
-module.exports = {
-    salesforceCreateAccountAndContact,
-};
-
