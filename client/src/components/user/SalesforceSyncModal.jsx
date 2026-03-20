@@ -22,6 +22,13 @@ export function SalesforceSyncModal({ isOpen, onClose, targetUserId }) {
         setResult(null);
     }, [isOpen]);
 
+    const mapBackendErrorToText = (err) => {
+        const code = err?.response?.data?.errorCode;
+        if (code === 'SF_DUPLICATE_CONTACT') return t('sf_err_duplicate_contact');
+        if (code === 'SF_GENERIC') return t('sf_err_generic');
+        return err?.response?.data?.message || t('sf_err_generic');
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!targetUserId) return;
@@ -44,7 +51,7 @@ export function SalesforceSyncModal({ isOpen, onClose, targetUserId }) {
             );
             setResult(res.data.data);
         } catch (err) {
-            setError(err.response?.data?.message || t('sf_err_generic'));
+            setError(mapBackendErrorToText(err));
         } finally {
             setLoading(false);
         }

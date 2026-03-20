@@ -153,12 +153,14 @@ async function salesforceCreateAccountAndContact({ user, company, phone, descrip
     if (description) accountPayload.Description = description;
 
     let account;
+    let accountDescriptionSaved = false;
     try {
         account = await salesforceFetchJson(`${base}/sobjects/Account`, {
             method: 'POST',
             accessToken,
             body: accountPayload,
         });
+        accountDescriptionSaved = Boolean(description);
     } catch (err) {
         if (description) {
             const payloadWithoutDescription = { Name: company };
@@ -186,6 +188,7 @@ async function salesforceCreateAccountAndContact({ user, company, phone, descrip
         AccountId: accountId,
     };
     if (phone) contactPayload.Phone = phone;
+    if (description && !accountDescriptionSaved) contactPayload.Description = description;
 
     const contact = await salesforceFetchJson(`${base}/sobjects/Contact`, {
         method: 'POST',
@@ -196,7 +199,7 @@ async function salesforceCreateAccountAndContact({ user, company, phone, descrip
     const contactId = contact?.id;
     if (!contactId) throw new Error('Salesforce Contact creation failed (no id returned)');
 
-    return { accountId, contactId, apiVersion };
+    return { accountId, contactId, apiVersion, accountDescriptionSaved };
 }
 
 module.exports = {

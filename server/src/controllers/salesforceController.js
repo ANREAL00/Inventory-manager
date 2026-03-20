@@ -1,6 +1,21 @@
 const prisma = require('../db');
 const { salesforceCreateAccountAndContact } = require('../services/salesforceService');
 
+function parseDuplicateSalesforceError(body) {
+    if (!Array.isArray(body)) return null;
+    const duplicate = body.find((e) => e?.errorCode === 'DUPLICATES_DETECTED');
+    if (!duplicate) return null;
+
+    const firstMatchId =
+        duplicate?.duplicateResult?.matchResults?.[0]?.matchRecords?.[0]?.record?.Id || null;
+
+    return {
+        message: 'Contact already exists in Salesforce',
+        errorCode: 'SF_DUPLICATE_CONTACT',
+        existingContactId: firstMatchId,
+    };
+}
+
 exports.createAccountAndContact = async (req, res) => {
     const targetUserId = req.params.id;
     const actingUser = req.user;
@@ -39,10 +54,21 @@ exports.createAccountAndContact = async (req, res) => {
             data: result,
         });
     } catch (err) {
+        const duplicate = parseDuplicateSalesforceError(err?.body);
+        if (duplicate) {
+            return res.status(409).json({
+                status: 'error',
+                message: duplicate.message,
+                errorCode: duplicate.errorCode,
+                data: { existingContactId: duplicate.existingContactId },
+            });
+        }
+
         const message = err?.message || 'Failed to create Salesforce records';
         res.status(500).json({
             status: 'error',
             message,
+            errorCode: 'SF_GENERIC',
             details: err?.body || undefined,
         });
     }
