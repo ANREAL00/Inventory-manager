@@ -63,7 +63,16 @@ const resources = {
       "sf_account_id": "Account ID",
       "sf_contact_id": "Contact ID",
       "sf_btn_submit": "Send to Salesforce",
-      "sf_btn_loading": "Creating in Salesforce..."
+      "sf_btn_loading": "Creating in Salesforce...",
+      "odoo_api_title": "Odoo / external API",
+      "odoo_api_desc": "Generate a secret token for this inventory. Anyone with the token can read aggregated statistics (read-only). Use it in Odoo import.",
+      "odoo_token_generate": "Generate API token",
+      "odoo_token_generating": "Generating…",
+      "odoo_token_label": "API token",
+      "odoo_export_url_label": "Export URL",
+      "odoo_copy": "Copy",
+      "odoo_token_warning": "Keep the token private. Generating again replaces the old token.",
+      "odoo_token_error": "Could not generate token"
     }
   },
   ru: {
@@ -127,7 +136,16 @@ const resources = {
       "sf_account_id": "ID компании (Account)",
       "sf_contact_id": "ID контакта (Contact)",
       "sf_btn_submit": "Отправить в Salesforce",
-      "sf_btn_loading": "Создаём в Salesforce..."
+      "sf_btn_loading": "Создаём в Salesforce...",
+      "odoo_api_title": "Odoo / внешний API",
+      "odoo_api_desc": "Сгенерируйте секретный токен для этого инвентаря. По токену доступны только агрегированная статистика (только чтение). Используйте в импорте Odoo.",
+      "odoo_token_generate": "Сгенерировать API-токен",
+      "odoo_token_generating": "Генерация…",
+      "odoo_token_label": "API-токен",
+      "odoo_export_url_label": "URL экспорта",
+      "odoo_copy": "Копировать",
+      "odoo_token_warning": "Не передавайте токен посторонним. Новая генерация заменит старый токен.",
+      "odoo_token_error": "Не удалось сгенерировать токен"
     }
   }
 };

@@ -21,7 +21,13 @@ export function StatisticsView({ inventoryId }) {
             <StatCard title={t('total_items')}>{stats.itemCount}</StatCard>
             {stats.fields.map((f, i) => (
                 <StatCard key={i} title={f.title}>
-                    {f.type === 'NUMBER' ? `${t('stat_avg')}: ${f.avg.toFixed(2)} (${t('stat_range')}: ${f.min} - ${f.max})` : `${t('stat_top')}: "${f.topValue}" (${f.frequency} ${t('stat_times')})`}
+                    {f.type === 'NUMBER' ? (
+                        `${t('stat_avg')}: ${f.avg.toFixed(2)} (${t('stat_range')}: ${f.min} - ${f.max})`
+                    ) : f.topValues?.length ? (
+                        `${t('stat_top')}: ${f.topValues.map((x) => `"${x.value}" (${x.count})`).join(', ')}`
+                    ) : (
+                        `${t('stat_top')}: "${f.topValue}" (${f.frequency} ${t('stat_times')})`
+                    )}
                 </StatCard>
             ))}
         </div>

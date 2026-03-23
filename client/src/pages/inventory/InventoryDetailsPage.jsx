@@ -13,6 +13,7 @@ import { CategoryImageStep } from '../../components/inventory/wizard/CategoryIma
 import { DiscussionView } from '../../components/inventory/DiscussionView';
 import { AccessSettingsView } from '../../components/inventory/AccessSettingsView';
 import { StatisticsView } from '../../components/inventory/StatisticsView';
+import { OdooApiTokenPanel } from '../../components/inventory/OdooApiTokenPanel';
 import { Plus, Save, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import api from '../../api';
@@ -174,7 +175,11 @@ export function InventoryDetailsPage() {
             {activeTab === 'discussion' && <DiscussionView inventoryId={id} />}
             {activeTab === 'stats' && <StatisticsView inventoryId={id} />}
             {activeTab === 'settings' && (
-                <div className="space-y-8 bg-white dark:bg-gray-950 p-6 border rounded-xl max-w-2xl"><BasicInfoStep data={localData} update={update} /><CategoryImageStep data={localData} update={update} /></div>
+                <div className="space-y-8 bg-white dark:bg-gray-950 p-6 border rounded-xl max-w-2xl">
+                    <BasicInfoStep data={localData} update={update} />
+                    <CategoryImageStep data={localData} update={update} />
+                    <OdooApiTokenPanel inventoryId={id} />
+                </div>
             )}
             {activeTab === 'access' && (
                 <div className="bg-white dark:bg-gray-950 p-6 border rounded-xl max-w-2xl">
