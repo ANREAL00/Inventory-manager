@@ -1,5 +1,7 @@
+const crypto = require('crypto');
 const prisma = require('../db');
 const { generateCustomId } = require('../services/customIdService');
+const { buildInventoryAggregates } = require('../services/inventoryAggregationService');
 
 const sendResponse = (res, data, message = 'Success') => {
     res.status(200).json({ status: 'success', message, data });
@@ -24,6 +26,12 @@ const checkAccess = (user, inventory) => {
     if (user.role === 'ADMIN') return true;
     if (inventory.ownerId === user.id) return true;
     return false;
+};
+
+const stripApiToken = (inventory) => {
+    if (!inventory || typeof inventory !== 'object') return inventory;
+    const { apiToken: _t, ...rest } = inventory;
+    return rest;
 };
 
 exports.createInventory = async (req, res) => {
@@ -71,7 +79,7 @@ exports.getAllInventories = async (req, res) => {
 exports.getInventory = async (req, res) => {
     try {
         const inventory = await getInventoryOrThrow(req.params.id);
-        sendResponse(res, { inventory });
+        sendResponse(res, { inventory: stripApiToken(inventory) });
     } catch (err) {
         res.status(404).json({ message: err.message });
     }
@@ -176,7 +184,7 @@ exports.updateInventory = async (req, res) => {
             },
         });
 
-        sendResponse(res, { inventory: updated }, 'Inventory updated');
+        sendResponse(res, { inventory: stripApiToken(updated) }, 'Inventory updated');
     } catch (err) {
         console.error('Update inventory error:', err);
         res.status(err.code === 'P2025' ? 409 : 500).json({ message: 'Conflict or update failed', error: err.message });
@@ -243,23 +251,37 @@ exports.getInventoryStats = async (req, res) => {
         const inv = await prisma.inventory.findUnique({ where: { id: req.params.id }, include: { items: true, fields: true } });
         if (!inv) return res.status(404).json({ message: 'Inventory not found' });
 
-        const stats = { itemCount: inv.items.length, fields: [] };
-        inv.fields.forEach(f => {
-            const typeMap = { NUMBER: 'number', STRING: 'string' };
-            if (!typeMap[f.type]) return;
-            const values = inv.items.map(it => it[`${typeMap[f.type]}${f.index}`]).filter(v => v !== null && v !== undefined);
-            if (f.type === 'NUMBER' && values.length) {
-                stats.fields.push({ title: f.title, type: 'NUMBER', avg: values.reduce((a, b) => a + b, 0) / values.length, min: Math.min(...values), max: Math.max(...values) });
-            } else if (f.type === 'STRING' && values.length) {
-                const counts = values.reduce((acc, v) => ({ ...acc, [v]: (acc[v] || 0) + 1 }), {});
-                const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-                stats.fields.push({ title: f.title, type: 'STRING', topValue: top[0], frequency: top[1] });
-            }
-        });
+        const stats = buildInventoryAggregates(inv);
         res.json({ stats });
     } catch (err) {
         console.error('Stats error:', err);
         res.status(500).json({ message: 'Failed to fetch stats' });
+    }
+};
+
+exports.generateInventoryApiToken = async (req, res) => {
+    try {
+        const inventory = await getInventoryOrThrow(req.params.id);
+        if (!checkAccess(req.user, inventory)) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        const token = crypto.randomBytes(32).toString('hex');
+        await prisma.inventory.update({
+            where: { id: inventory.id },
+            data: { apiToken: token },
+        });
+
+        const host = req.get('host');
+        const proto = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+        const baseUrl = host ? `${proto}://${host}` : '';
+        const exportPath = `/api/external/inventory-export?token=${encodeURIComponent(token)}`;
+        const exportUrl = baseUrl ? `${baseUrl}${exportPath}` : exportPath;
+
+        sendResponse(res, { apiToken: token, exportUrl }, 'API token generated');
+    } catch (err) {
+        console.error('generateInventoryApiToken:', err);
+        res.status(500).json({ message: 'Failed to generate token', error: err.message });
     }
 };
 

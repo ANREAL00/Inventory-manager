@@ -24,5 +24,6 @@ router.delete('/:id', inventoryController.deleteInventory);
 router.patch('/:id', inventoryController.updateInventory);
 
 router.post('/:id/generate-id', inventoryController.generateId);
+router.post('/:id/api-token', inventoryController.generateInventoryApiToken);
 
 module.exports = router;
