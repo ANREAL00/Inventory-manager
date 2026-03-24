@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { SupportTicketProvider } from './context/SupportTicketContext';
 import { Layout } from './components/layout/Layout';
 import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
@@ -14,6 +15,7 @@ import { AuthCallback } from './pages/auth/AuthCallback';
 function App() {
   return (
     <BrowserRouter>
+      <SupportTicketProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="auth-callback" element={<AuthCallback />} />
@@ -27,6 +29,7 @@ function App() {
           <Route path="search" element={<SearchPage />} />
         </Route>
       </Routes>
+      </SupportTicketProvider>
     </BrowserRouter>
   );
 }

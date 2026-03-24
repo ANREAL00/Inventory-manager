@@ -4,7 +4,8 @@ import { ThemeSwitcher } from '../ui/ThemeSwitcher';
 import { LanguageSwitcher } from '../ui/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 import { SearchHeader } from './SearchHeader';
-import { LogOut, User, Menu, X } from 'lucide-react';
+import { LogOut, User, Menu, X, CircleHelp } from 'lucide-react';
+import { useSupportTicket } from '../../context/SupportTicketContext';
 import { useState } from 'react';
 
 const Logo = () => (
@@ -34,12 +35,15 @@ const AuthNav = ({ t }) => (
     </div>
 );
 
-const MobileMenu = ({ user, logout, t, open }) => {
+const MobileMenu = ({ user, logout, t, open, onSupport }) => {
     if (!open) return null;
     return (
         <div className="md:hidden border-t border-gray-200 dark:border-gray-800 px-4 py-3 flex flex-col gap-3">
             <SearchHeader placeholder={t('search_placeholder')} />
             <div className="flex items-center gap-3">
+                <button type="button" onClick={onSupport} className="flex items-center gap-2 hover:text-blue-500">
+                    <CircleHelp size={18} /> {t('support_link')}
+                </button>
                 <LanguageSwitcher />
                 <ThemeSwitcher />
             </div>
@@ -65,6 +69,7 @@ const MobileMenu = ({ user, logout, t, open }) => {
 export function Navbar() {
     const { user, logout } = useAuth();
     const { t } = useTranslation();
+    const { openSupportModal } = useSupportTicket();
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
@@ -75,6 +80,14 @@ export function Navbar() {
                     <SearchHeader placeholder={t('search_placeholder')} />
                 </div>
                 <div className="hidden md:flex items-center gap-4 sm:gap-6">
+                    <button
+                        type="button"
+                        onClick={openSupportModal}
+                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300"
+                        title={t('support_tooltip')}
+                    >
+                        <CircleHelp size={22} />
+                    </button>
                     <LanguageSwitcher />
                     <ThemeSwitcher />
                     {user ? <UserNav user={user} logout={logout} t={t} /> : <AuthNav t={t} />}
@@ -83,7 +96,16 @@ export function Navbar() {
                     {menuOpen ? <X size={20} /> : <Menu size={20} />}
                 </button>
             </div>
-            <MobileMenu user={user} logout={logout} t={t} open={menuOpen} />
+            <MobileMenu
+                user={user}
+                logout={logout}
+                t={t}
+                open={menuOpen}
+                onSupport={() => {
+                    openSupportModal();
+                    setMenuOpen(false);
+                }}
+            />
         </nav>
     );
 }
